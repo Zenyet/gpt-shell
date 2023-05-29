@@ -13,6 +13,7 @@ specifiers:
   postcss: ^8.4.23
   react: ^18.2.0
   react-dom: ^18.2.0
+  react-textarea-autosize: ^8.4.1
   tailwindcss: ^3.3.2
   typescript: ^5.0.2
   vite: ^4.3.2
@@ -32,6 +33,7 @@ devDependencies:
   eslint-plugin-react-hooks: registry.npmmirror.com/eslint-plugin-react-hooks/4.6.0_eslint@8.39.0
   eslint-plugin-react-refresh: registry.npmmirror.com/eslint-plugin-react-refresh/0.3.5_eslint@8.39.0
   postcss: registry.npmmirror.com/postcss/8.4.23
+  react-textarea-autosize: registry.npmmirror.com/react-textarea-autosize/8.4.1_3pi6y6cylzraaxxtldk4o6b3zi
   tailwindcss: registry.npmmirror.com/tailwindcss/3.3.2
   typescript: registry.npmmirror.com/typescript/5.0.4
   vite: registry.npmmirror.com/vite/4.3.4
@@ -282,6 +284,15 @@ packages:
     dependencies:
       '@babel/core': registry.npmmirror.com/@babel/core/7.21.8
       '@babel/helper-plugin-utils': registry.npmmirror.com/@babel/helper-plugin-utils/7.21.5
+    dev: true
+
+  registry.npmmirror.com/@babel/runtime/7.21.5:
+    resolution: {integrity: sha512-8jI69toZqqcsnqGGqwGS4Qb1VwLOEp4hz+CXPywcvjs60u3B4Pom/U/7rm4W8tMOYEB+E9wgD0mW1l3r8qlI9Q==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/runtime/-/runtime-7.21.5.tgz}
+    name: '@babel/runtime'
+    version: 7.21.5
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: registry.npmmirror.com/regenerator-runtime/0.13.11
     dev: true
 
   registry.npmmirror.com/@babel/template/7.20.7:
@@ -1881,7 +1892,6 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: registry.npmmirror.com/js-tokens/4.0.0
-    dev: false
 
   registry.npmmirror.com/lru-cache/5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/lru-cache/-/lru-cache-5.1.1.tgz}
@@ -2233,6 +2243,23 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
+  registry.npmmirror.com/react-textarea-autosize/8.4.1_3pi6y6cylzraaxxtldk4o6b3zi:
+    resolution: {integrity: sha512-aD2C+qK6QypknC+lCMzteOdIjoMbNlgSFmJjCV+DrfTPwp59i/it9mMNf2HDzvRjQgKAyBDPyLJhcrzElf2U4Q==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/react-textarea-autosize/-/react-textarea-autosize-8.4.1.tgz}
+    id: registry.npmmirror.com/react-textarea-autosize/8.4.1
+    name: react-textarea-autosize
+    version: 8.4.1
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@babel/runtime': registry.npmmirror.com/@babel/runtime/7.21.5
+      react: registry.npmmirror.com/react/18.2.0
+      use-composed-ref: registry.npmmirror.com/use-composed-ref/1.3.0_react@18.2.0
+      use-latest: registry.npmmirror.com/use-latest/1.2.1_3pi6y6cylzraaxxtldk4o6b3zi
+    transitivePeerDependencies:
+      - '@types/react'
+    dev: true
+
   registry.npmmirror.com/react/18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/react/-/react-18.2.0.tgz}
     name: react
@@ -2240,7 +2267,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: registry.npmmirror.com/loose-envify/1.4.0
-    dev: false
 
   registry.npmmirror.com/read-cache/1.0.0:
     resolution: {integrity: sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/read-cache/-/read-cache-1.0.0.tgz}
@@ -2257,6 +2283,12 @@ packages:
     engines: {node: '>=8.10.0'}
     dependencies:
       picomatch: registry.npmmirror.com/picomatch/2.3.1
+    dev: true
+
+  registry.npmmirror.com/regenerator-runtime/0.13.11:
+    resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz}
+    name: regenerator-runtime
+    version: 0.13.11
     dev: true
 
   registry.npmmirror.com/resolve-from/4.0.0:
@@ -2565,6 +2597,50 @@ packages:
     version: 4.4.1
     dependencies:
       punycode: registry.npmmirror.com/punycode/2.3.0
+    dev: true
+
+  registry.npmmirror.com/use-composed-ref/1.3.0_react@18.2.0:
+    resolution: {integrity: sha512-GLMG0Jc/jiKov/3Ulid1wbv3r54K9HlMW29IWcDFPEqFkSO2nS0MuefWgMJpeHQ9YJeXDL3ZUF+P3jdXlZX/cQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/use-composed-ref/-/use-composed-ref-1.3.0.tgz}
+    id: registry.npmmirror.com/use-composed-ref/1.3.0
+    name: use-composed-ref
+    version: 1.3.0
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: registry.npmmirror.com/react/18.2.0
+    dev: true
+
+  registry.npmmirror.com/use-isomorphic-layout-effect/1.1.2_3pi6y6cylzraaxxtldk4o6b3zi:
+    resolution: {integrity: sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/use-isomorphic-layout-effect/-/use-isomorphic-layout-effect-1.1.2.tgz}
+    id: registry.npmmirror.com/use-isomorphic-layout-effect/1.1.2
+    name: use-isomorphic-layout-effect
+    version: 1.1.2
+    peerDependencies:
+      '@types/react': '*'
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@types/react': registry.npmmirror.com/@types/react/18.2.5
+      react: registry.npmmirror.com/react/18.2.0
+    dev: true
+
+  registry.npmmirror.com/use-latest/1.2.1_3pi6y6cylzraaxxtldk4o6b3zi:
+    resolution: {integrity: sha512-xA+AVm/Wlg3e2P/JiItTziwS7FK92LWrDB0p+hgXloIMuVCeJJ8v6f0eeHyPZaJrM+usM1FkFfbNCrJGs8A/zw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/use-latest/-/use-latest-1.2.1.tgz}
+    id: registry.npmmirror.com/use-latest/1.2.1
+    name: use-latest
+    version: 1.2.1
+    peerDependencies:
+      '@types/react': '*'
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@types/react': registry.npmmirror.com/@types/react/18.2.5
+      react: registry.npmmirror.com/react/18.2.0
+      use-isomorphic-layout-effect: registry.npmmirror.com/use-isomorphic-layout-effect/1.1.2_3pi6y6cylzraaxxtldk4o6b3zi
     dev: true
 
   registry.npmmirror.com/util-deprecate/1.0.2:
