@@ -49,3 +49,37 @@ p, h1, h2, h3, h4, h5, h6 {
 #root, #__next {
     isolation: isolate;
 }
+
+.rm-sc::-webkit-scrollbar {
+    -webkit-appearance: none; /*清除默认样式*/
+    display: none;
+}
+
+.a_f::after { /* before and after */
+    content: '';
+    position: absolute;
+    right: -.6rem;
+    top: 0;
+    height: 0;
+    width: 0;
+    border-style: solid;
+    border-width: .5rem 0 .5rem .6rem;
+    border-color: transparent transparent transparent #0074cc;
+}
+
+.t_t {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 8px 8px 0;
+    border-color: transparent #0074cc transparent transparent;
+}
+
+.b_t {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 8px 8px;
+    border-color: transparent transparent #0074cc transparent;
+}
+
