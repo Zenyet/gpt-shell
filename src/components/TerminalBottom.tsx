@@ -31,30 +31,17 @@ export function TerminalBottom() {
     const con_ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // t_a_ref.current.addEventListener('compositionstart', function () {
-        //     setIC(true);
+        // document.addEventListener('keydown', ev => {
+        //     console.log(histories);
+        //     if (ev.ctrlKey && ev.key === 'c') {
+        //         // console.log('test')
+        //         console.log(histories);
+        //         c_tRef.current.abort();
+        //         c_tRef.current = new AbortController();
+        //         setProc(false);
+        //         setReq(false);
+        //     }
         // });
-        //
-        // t_a_ref.current.addEventListener('compositionend', function () {
-        //     setIC(false);
-        // });
-
-        // try {
-        //     setHistories(JSON.parse(localStorage.getItem('store')) || []);
-        // } catch (e) {
-        //     console.log(e.message); // JSON.parse
-        // }
-
-
-        document.addEventListener('keydown', ev => {
-            if (ev.ctrlKey && ev.key === 'c') {
-                // console.log('test')
-                c_tRef.current.abort();
-                c_tRef.current = new AbortController();
-                setProc(false);
-                setReq(false);
-            }
-        });
         return () => {
             c_tRef.current.abort();
         }
@@ -106,7 +93,10 @@ export function TerminalBottom() {
     }
 
     async function handlePress(e: KeyboardEvent<HTMLTextAreaElement>) {
-        if (!e.shiftKey && !e.nativeEvent.isComposing && e.key === 'Enter') {
+        /**
+         * !isReq && !processing 防止在 Enter 后有意无意的继续 Enter 导致的 State 和 请求问题
+         */
+        if (!isReq && !processing && !e.shiftKey && !e.nativeEvent.isComposing && e.key === 'Enter') {
             e.preventDefault();
             // const t = e.target as HTMLInputElement;
             switch (prompt) {
@@ -130,7 +120,10 @@ export function TerminalBottom() {
                     // setHistories([...histories, {command: `${prompt}`, content: true}]);
                     setProc(true);
                     setReq(true);
+                    const his_copy = histories;
+
                     try {
+
                         setHistories([...histories, {
                             ts: +new Date(),
                             user: {
@@ -143,23 +136,25 @@ export function TerminalBottom() {
                             },
                             isLast: true
                         }]);
-                        try {
-                            const old_rcs: History[] = JSON.parse(localStorage.getItem('store'));
-                            localStorage.setItem('store', JSON.stringify([...old_rcs, {
-                                ts: +new Date(),
-                                user: {
-                                    command: prompt,
-                                    role: 'user'
-                                },
-                                assistant: {
-                                    role: 'assistant',
-                                    replies: ''
-                                }
-                            }]));
-                        } catch (e) {
-                            console.log(e.message);
-                        }
+
+                        // try {
+                        //     const old_rcs: History[] = JSON.parse(localStorage.getItem('store')) || [];
+                        //     localStorage.setItem('store', JSON.stringify([...old_rcs, {
+                        //         ts: +new Date(),
+                        //         user: {
+                        //             command: prompt,
+                        //             role: 'user'
+                        //         },
+                        //         assistant: {
+                        //             role: 'assistant',
+                        //             replies: ''
+                        //         }
+                        //     }]));
+                        // } catch (e) {
+                        //     console.log(e.message);
+                        // }
                         const {body} = await fetch(apiUrl, {...fetchOptions, signal: c_tRef.current.signal});
+
                         setReq(false);
                         const d = new TextDecoder('utf8');
                         const reader = await body.getReader();
@@ -167,32 +162,26 @@ export function TerminalBottom() {
 
                         while (true) {
                             const {value, done} = await reader.read();
-                            if (done) {
+                            if (done) { // stream end
                                 setTokens('');
                                 setProc(false);
-                                let records: History[] = [];
-                                if (localStorage.getItem('store')) {
-                                    try {
-                                        records = JSON.parse(localStorage.getItem('store'));
-                                        const last: number = records.length - 1;
-                                        records[last].assistant.replies = fullText;
-                                    } catch (e) {
-                                        console.log(e.message);
+                                const old_store: History[] = JSON.parse(localStorage.getItem('store')) || [];
+                                const new_rc = {
+                                    ts: +new Date(),
+                                    user: {
+                                        command: prompt,
+                                        role: 'user'
+                                    },
+                                    assistant: {
+                                        role: 'assistant',
+                                        replies: fullText
                                     }
-                                }
-                                // const record: History[] = [...records, {
-                                //     ts: +new Date(),
-                                //     user: {
-                                //         command: prompt,
-                                //         role: 'user'
-                                //     },
-                                //     assistant: {
-                                //         role: 'assistant',
-                                //         replies: fullText
-                                //     }
-                                // }];
-                                localStorage.setItem('store', JSON.stringify(records));
-                                setHistories([...histories, records[records.length - 1]]);
+                                };
+
+                                localStorage.setItem('store', JSON.stringify([...old_store, new_rc]));
+                                new_rc['isLast'] = false;
+                                setHistories([...histories, new_rc]);
+
                                 break;
                             } else {
                                 const decodedString = d.decode(value);
@@ -217,6 +206,20 @@ export function TerminalBottom() {
                     break;
             }
             setPrompt('');
+        } else if (isReq || processing && e.ctrlKey && e.key === 'c') {
+            const old_rc = JSON.parse(localStorage.getItem('store')) || [];
+            const copy = [...histories];
+            const last = copy?.length - 1;
+            copy[last].assistant.replies = tokens;
+            localStorage.setItem('store', JSON.stringify([...old_rc, copy[last]]));
+            copy[last].isLast = false;
+            setHistories([...copy]);
+            setTokens('');
+            setPrompt('');
+            c_tRef.current.abort();
+            c_tRef.current = new AbortController();
+            setProc(false);
+            setReq(false);
         } else if (e.key === 'Tab') {
             e.preventDefault();
             sug && setPrompt(sug);
@@ -228,13 +231,13 @@ export function TerminalBottom() {
             // console.log(e.target)
             e.preventDefault();
             e.target === e.currentTarget && t_a_ref.current && t_a_ref.current.focus();
-        }} className='ml-2 text-white mr-2 h-[calc(100%-1.8rem)] overflow-auto rm-sc'>
+        }} className='ml-2 text-white mr-2 h-[calc(100%-1.8rem)] overflow-x-hidden overflow-y-auto rm-sc'>
             <div className='inline-block mt-0.5'>
-                Last Login: Sun May 7 23:19:46 on Chrome
+                Last login: Sun May 7 23:19:46 on Chrome
             </div>
             <div className='flex items-start flex-col relative mb-1'>
                 {histories.map((_, i) => {
-                    return <div key={_.ts + i}>
+                    return <div key={_?.ts + i}>
                         <div className='flex items-start'>
                             <div className='flex items-center justify-center mr-2'>
                                 <span>root@sh#</span>
@@ -247,11 +250,11 @@ export function TerminalBottom() {
                                     <span className='text-gray-800'>~</span>
                                 </div>
                             </div>
-                            <span>{_.user.command}</span>
+                            <span>{_?.user.command}</span>
                         </div>
                         {/*to-do: Memo 优化 markdown replies*/}
                         <main className=''
-                              dangerouslySetInnerHTML={{__html: _.assistant.replies ? _.assistant.replies : tokens}}></main>
+                              dangerouslySetInnerHTML={{__html: _?.isLast ? tokens : _?.assistant.replies}}></main>
                     </div>
                 })}
                 <div style={{position: processing ? 'absolute' : 'static', zIndex: processing ? '-1' : '1', bottom: 0}}
