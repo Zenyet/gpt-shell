@@ -235,7 +235,7 @@ export function TerminalBottom() {
             <div className='inline-block mt-0.5'>
                 Last login: Sun May 7 23:19:46 on Chrome
             </div>
-            <div className='flex items-start flex-col relative mb-1'>
+            <div className='flex flex-col relative mb-1'>
                 {histories.map((_, i) => {
                     return <div key={_?.ts + i}>
                         <div className='flex items-start'>
