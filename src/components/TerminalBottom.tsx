@@ -17,7 +17,7 @@ type History = {
     isLast?: boolean
 }
 
-const commands: string[] = ["clear", "history", "exit", "help", "cls"];
+const commands: string[] = ["clear", "history", "exit", "help"];
 
 export function TerminalBottom() {
     const [sug, setSug] = useState<string>('');
