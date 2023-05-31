@@ -23,12 +23,14 @@ export function TerminalBottom() {
     const [sug, setSug] = useState<string>('');
     const [prompt, setPrompt] = useState<string>('');
     const [histories, setHistories] = useState<History[]>([]);
+    const [cmdMaps, setCmdM] = useState<string[]>([]);
     const [processing, setProc] = useState<boolean>(false);
     const [tokens, setTokens] = useState<string>('');
     const c_tRef = useRef<AbortController>(new AbortController());
     const [isReq, setReq] = useState<boolean>(false);
     const t_a_ref = useRef<HTMLTextAreaElement>(null);
     const con_ref = useRef<HTMLDivElement>(null);
+    const [idx, setIdx] = useState<number>(histories.length || 0);
 
     useEffect(() => {
         // document.addEventListener('keydown', ev => {
@@ -52,6 +54,10 @@ export function TerminalBottom() {
             con_ref.current.scrollTop = con_ref.current.scrollHeight;
         }
     }, [histories]);
+
+    useEffect(() => {
+        setIdx(cmdMaps.length);
+    }, [cmdMaps]);
 
     // const configuration = new Configuration({
     //     apiKey: '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'
@@ -99,6 +105,8 @@ export function TerminalBottom() {
         if (!isReq && !processing && !e.shiftKey && !e.nativeEvent.isComposing && e.key === 'Enter') {
             e.preventDefault();
             // const t = e.target as HTMLInputElement;
+            setCmdM([...cmdMaps, prompt]);
+
             switch (prompt) {
                 case "help":
                     setSug('');
@@ -223,6 +231,21 @@ export function TerminalBottom() {
         } else if (e.key === 'Tab') {
             e.preventDefault();
             sug && setPrompt(sug);
+        } else if (e.code === 'ArrowUp') {
+            e.preventDefault();
+            if (idx > 0) {
+                setIdx(idx - 1);
+                setPrompt(cmdMaps[idx - 1] || '');
+                console.log('up: ', cmdMaps[idx - 1]);
+            }
+        } else if (e.code === 'ArrowDown') {
+            e.preventDefault();
+            // idx < histories.length && setIdx(idx + 1);
+            if (idx < cmdMaps.length) {
+                setIdx(idx + 1);
+                setPrompt(cmdMaps[idx + 1] || '');
+                console.log('down: ', cmdMaps[idx + 1]);
+            }
         }
     }
 
