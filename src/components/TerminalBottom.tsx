@@ -3,6 +3,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 // import {debounce} from "../helpers";
 // import {OpenAIApi, Configuration} from "openai";
 import {useEffect, useRef, useState} from "react";
+import {dateF} from "../helpers";
 
 type History = {
     ts: number
@@ -14,7 +15,8 @@ type History = {
         replies: string
         role: string
     },
-    isLast?: boolean
+    isLast?: boolean,
+    d?: string
 }
 
 const commands: string[] = ["clear", "history", "exit", "help"];
@@ -123,120 +125,139 @@ export function TerminalBottom() {
             // const t = e.target as HTMLInputElement;
             setCmdM([...cmdMaps, prompt]);
 
-            switch (prompt) {
-                case "help":
-                    setSug('');
-                    break;
-                case "history":
-                    setSug('');
-                    break;
-                case "exit":
-                    setSug('');
-                    break;
-                case 'clear':
-                    setSug('');
-                    setHistories([]);
-                    break;
-                case '':
-                    // setHistories([...histories, {command: `${prompt}`, content: false}]);
-                    break;
-                default:
-                    // setHistories([...histories, {command: `${prompt}`, content: true}]);
-                    setProc(true);
-                    setReq(true);
-                    const his_copy = histories;
-
-                    try {
-
+            if (prompt.startsWith('history')) {
+                setSug('');
+                const splits = prompt.split('|');
+                const his: History[] = JSON.parse(localStorage.getItem('store')) || [];
+                if (splits[1]) {
+                    const filter_date = splits[1].split('grep')[1].trim();
+                    const copy = his.filter(_ => _.d.split(' ')[0] === filter_date);
+                    setHistories([...copy]);
+                } else {
+                    setHistories([...his]);
+                }
+            } else {
+                switch (prompt) {
+                    case "help": {
+                        setSug('');
+                        break;
+                    }
+                    case "exit": {
+                        setSug('');
+                        // window.open('', '_self', '');
                         setHistories([...histories, {
-                            ts: +new Date(),
                             user: {
-                                command: prompt,
+                                command: 'exit',
                                 role: 'user'
                             },
                             assistant: {
-                                role: 'assistant',
-                                replies: ''
+                                replies: "exit: window.close() won't work correctly :o7",
+                                role: 'assistant'
                             },
-                            isLast: true
+                            ts: +new Date()
                         }]);
+                        break;
+                    }
+                    case 'clear': {
+                        setSug('');
+                        setHistories([]);
+                        break;
+                    }
+                    case '': {
+                        // setHistories([...histories, {command: `${prompt}`, content: false}]);
+                        break;
+                    }
+                    default: {
+                        // setHistories([...histories, {command: `${prompt}`, content: true}]);
+                        setProc(true);
+                        setReq(true);
+                        setSug('');
+                        // const his_copy = histories;
 
-                        // try {
-                        //     const old_rcs: History[] = JSON.parse(localStorage.getItem('store')) || [];
-                        //     localStorage.setItem('store', JSON.stringify([...old_rcs, {
-                        //         ts: +new Date(),
-                        //         user: {
-                        //             command: prompt,
-                        //             role: 'user'
-                        //         },
-                        //         assistant: {
-                        //             role: 'assistant',
-                        //             replies: ''
-                        //         }
-                        //     }]));
-                        // } catch (e) {
-                        //     console.log(e.message);
-                        // }
-                        const {body} = await fetch(apiUrl, {...fetchOptions, signal: c_tRef.current.signal});
+                        try {
 
-                        setReq(false);
-                        const d = new TextDecoder('utf8');
-                        const reader = await body.getReader();
-                        let fullText = ''
+                            setHistories([...histories, {
+                                ts: +new Date(),
+                                user: {
+                                    command: prompt,
+                                    role: 'user'
+                                },
+                                assistant: {
+                                    role: 'assistant',
+                                    replies: ''
+                                },
+                                isLast: true
+                            }]);
 
-                        while (true) {
-                            const {value, done} = await reader.read();
-                            if (done) { // stream end
-                                setTokens('');
-                                setProc(false);
-                                const old_store: History[] = JSON.parse(localStorage.getItem('store')) || [];
-                                const new_rc = {
-                                    ts: +new Date(),
-                                    user: {
-                                        command: prompt,
-                                        role: 'user'
-                                    },
-                                    assistant: {
-                                        role: 'assistant',
-                                        replies: fullText
+                            const {body} = await fetch(apiUrl, {...fetchOptions, signal: c_tRef.current.signal});
+
+                            setReq(false);
+                            const d = new TextDecoder('utf8');
+                            const reader = await body.getReader();
+                            let fullText = ''
+
+                            while (true) {
+                                const {value, done} = await reader.read();
+                                if (done) { // stream end
+                                    setTokens('');
+                                    setProc(false);
+                                    const old_store: History[] = JSON.parse(localStorage.getItem('store')) || [];
+                                    const date: Date = new Date();
+                                    const new_rc = {
+                                        ts: +date,
+                                        d: dateF(date),
+                                        user: {
+                                            command: prompt,
+                                            role: 'user'
+                                        },
+                                        assistant: {
+                                            role: 'assistant',
+                                            replies: fullText
+                                        },
+                                        isLast: false
+                                    };
+
+                                    localStorage.setItem('store', JSON.stringify([...old_store, new_rc]));
+                                    new_rc.d = '';
+                                    setHistories([...histories, new_rc]);
+
+                                    break;
+                                } else {
+                                    const decodedString = d.decode(value);
+                                    try {
+                                        //fixes string not json-parseable otherwise
+                                        let splits: string[] = decodedString.split('data: ');
+                                        splits = splits.filter(_ => _ !== '');
+                                        splits.forEach(_ => {
+                                            const text: string = JSON.parse(_).choices[0].delta.content || '';
+                                            fullText += text;
+                                            setTokens(fullText);
+                                        })
+                                    } catch (e) {
+                                        // the last line is data: [DONE] which is not parseable either, so we catch that.
+                                        console.log('done');
                                     }
-                                };
-
-                                localStorage.setItem('store', JSON.stringify([...old_store, new_rc]));
-                                new_rc['isLast'] = false;
-                                setHistories([...histories, new_rc]);
-
-                                break;
-                            } else {
-                                const decodedString = d.decode(value);
-                                try {
-                                    //fixes string not json-parseable otherwise
-                                    let splits: string[] = decodedString.split('data: ');
-                                    splits = splits.filter(_ => _ !== '');
-                                    splits.forEach(_ => {
-                                        const text: string = JSON.parse(_).choices[0].delta.content || '';
-                                        fullText += text;
-                                        setTokens(fullText);
-                                    })
-                                } catch (e) {
-                                    // the last line is data: [DONE] which is not parseable either, so we catch that.
-                                    console.log('done');
                                 }
                             }
+                        } catch (err) {
+                            console.log(err.message);
                         }
-                    } catch (err) {
-                        console.log(err.message);
+                        break;
                     }
-                    break;
+                }
             }
+
             setPrompt('');
         } else if (isReq || processing && e.ctrlKey && e.key === 'c') {
+            setSug('');
             const old_rc = JSON.parse(localStorage.getItem('store')) || [];
             const copy = [...histories];
             const last = copy?.length - 1;
             copy[last].assistant.replies = tokens;
-            localStorage.setItem('store', JSON.stringify([...old_rc, copy[last]]));
+            copy[last].d = dateF(new Date(copy[last].ts));
             copy[last].isLast = false;
+            localStorage.setItem('store', JSON.stringify([...old_rc, copy[last]]));
+            copy[last].d = '';
             setHistories([...copy]);
             setTokens('');
             setPrompt('');
@@ -252,7 +273,6 @@ export function TerminalBottom() {
             if (idx > 0) {
                 setIdx(idx - 1);
                 setPrompt(cmdMaps[idx - 1] || '');
-                console.log('up: ', cmdMaps[idx - 1]);
             }
         } else if (e.code === 'ArrowDown') {
             e.preventDefault();
@@ -260,7 +280,6 @@ export function TerminalBottom() {
             if (idx < cmdMaps.length) {
                 setIdx(idx + 1);
                 setPrompt(cmdMaps[idx + 1] || '');
-                console.log('down: ', cmdMaps[idx + 1]);
             }
         }
     }
@@ -271,8 +290,8 @@ export function TerminalBottom() {
             e.preventDefault();
             e.target === e.currentTarget && t_a_ref.current && t_a_ref.current.focus();
         }} className='ml-2 text-white mr-2 h-[calc(100%-1.8rem)] overflow-x-hidden overflow-y-auto rm-sc'>
-            <div className='inline-block mt-0.5'>
-                Last login: Sun May 7 23:19:46 on Chrome
+            <div className='inline-block mt-0.5 font-mono'>
+                {l_l}
             </div>
             <div className='flex flex-col relative mb-1'>
                 {histories.map((_, i) => {
@@ -289,7 +308,10 @@ export function TerminalBottom() {
                                     <span className='text-gray-800'>~</span>
                                 </div>
                             </div>
-                            <span>{_?.user.command}</span>
+                            <div>
+                                <span>{_?.user.command}</span>
+                                <span className='ml-6 text-green-700 font-terminal'>{_?.d}</span>
+                            </div>
                         </div>
                         {/*to-do: Memo 优化 markdown replies*/}
                         <main className=''
@@ -308,11 +330,11 @@ export function TerminalBottom() {
                             <span className='text-gray-800'>~</span>
                         </div>
                     </div>
-                    <div className='flex-1 relative'>
-                        <span className='absolute left-2 opacity-70 z-0'>{sug}</span>
+                    <div className='flex-1 relative ml-2'>
+                        <span className='absolute left-0 opacity-70 z-0'>{sug}</span>
                         <TextareaAutosize ref={t_a_ref} value={prompt} onInput={handleInput} onKeyDown={handlePress}
                                           autoFocus
-                                          className='w-[100%] flex-1 ml-2 caret-w-2 resize-none focus:outline-none bg-transparent'>
+                                          className='w-[100%] caret-w-2 resize-none focus:outline-none bg-transparent'>
                         </TextareaAutosize>
                     </div>
                 </div>
