@@ -21,6 +21,7 @@ const commands: string[] = ["clear", "history", "exit", "help"];
 
 export function TerminalBottom() {
     const [sug, setSug] = useState<string>('');
+    const [l_l, setL_L] = useState<string>('');
     const [prompt, setPrompt] = useState<string>('');
     const [histories, setHistories] = useState<History[]>([]);
     const [cmdMaps, setCmdM] = useState<string[]>([]);
@@ -33,19 +34,29 @@ export function TerminalBottom() {
     const [idx, setIdx] = useState<number>(histories.length || 0);
 
     useEffect(() => {
-        // document.addEventListener('keydown', ev => {
-        //     console.log(histories);
-        //     if (ev.ctrlKey && ev.key === 'c') {
-        //         // console.log('test')
-        //         console.log(histories);
-        //         c_tRef.current.abort();
-        //         c_tRef.current = new AbortController();
-        //         setProc(false);
-        //         setReq(false);
-        //     }
-        // });
+        setL_L(localStorage.getItem('l_l') || 'Last login: Sun May 7 23:19:46 on Chrome');
+
+        const handleBeforeUnload = (event) => {
+            event.preventDefault();
+            // mark last login :)
+            const date = new Date();
+            const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            const dayOfWeek = weekdays[date.getDay()];
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const month = months[date.getMonth()];
+            const day = date.getDate();
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+            const seconds = date.getSeconds();
+            localStorage.setItem('l_l', `Last login: ${dayOfWeek} ${month} ${day} ${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds} on Chrome`);
+        };
+
+        // 添加 beforeunload 事件监听器
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
         return () => {
             c_tRef.current.abort();
+            window.removeEventListener('beforeunload', handleBeforeUnload);
         }
     }, []);
 
