@@ -87,9 +87,14 @@ export function TerminalBottom() {
         const t = e.target as HTMLInputElement;
 
         // auto suggestion
-        const f_v = commands.find(_ => _.startsWith(t.value));
 
-        if (f_v && t.value) {
+        let f_v: string;
+
+        if (t.value.length < 24) {
+            f_v = commands.find(_ => _.startsWith(t.value));
+        }
+
+        if (f_v && t.value && t.value.length < 24) {
             setSug(f_v);
         } else {
             setSug('');
