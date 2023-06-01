@@ -6,7 +6,6 @@ interface Message {
 const Completions_URL: string = import.meta.env.VITE_COMPLETIONS_PROXY;
 
 export async function Completions(messages: Message[], signal: AbortSignal | null): Promise<Response> {
-    console.log(Completions_URL);
     const fetchOptions: RequestInit = {
         method: 'POST',
         headers: {
