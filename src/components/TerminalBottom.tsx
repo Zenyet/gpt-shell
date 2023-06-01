@@ -108,6 +108,23 @@ export function TerminalBottom() {
                 switch (prompt) {
                     case "help": {
                         setSug('');
+                        setHistories([...histories, {
+                            user: {
+                                command: 'help',
+                                role: 'user'
+                            },
+                            assistant: {
+                                replies: `<ul>
+                                    <span>Welcome to gpt-shell🐚! Try some of the commands below.</span>
+                                    <li class="ml-3 mt-2">clear - Clear the screen</li>
+                                    <li class="ml-3">history - Show all history</li>
+                                    <li class="ml-3">exit - Fake exit...</li>
+                                    <li class="ml-3 mb-2">press up arrow / down arrow - Select history commands</li>
+                                </ul>`,
+                                role: 'assistant'
+                            },
+                            ts: +new Date()
+                        }])
                         break;
                     }
                     case "exit": {
