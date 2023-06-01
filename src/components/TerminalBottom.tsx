@@ -3,7 +3,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 // import {debounce} from "../helpers";
 // import {OpenAIApi, Configuration} from "openai";
 import {useEffect, useRef, useState} from "react";
-import {dateF} from "../helpers";
+import {dateF, genL_L} from "../helpers";
 
 type History = {
     ts: number
@@ -41,16 +41,7 @@ export function TerminalBottom() {
         const handleBeforeUnload = (event) => {
             event.preventDefault();
             // mark last login :)
-            const date = new Date();
-            const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-            const dayOfWeek = weekdays[date.getDay()];
-            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            const month = months[date.getMonth()];
-            const day = date.getDate();
-            const hours = date.getHours();
-            const minutes = date.getMinutes();
-            const seconds = date.getSeconds();
-            localStorage.setItem('l_l', `Last login: ${dayOfWeek} ${month} ${day} ${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds} on Chrome`);
+            localStorage.setItem('l_l', genL_L(new Date()));
         };
 
         // 添加 beforeunload 事件监听器
@@ -92,7 +83,6 @@ export function TerminalBottom() {
             messages: [{role: "user", content: prompt}],
             temperature: 0.6,
             stream: true,
-            //    stop: ['\n'],
         }),
     };
 
@@ -175,7 +165,6 @@ export function TerminalBottom() {
                         // const his_copy = histories;
 
                         try {
-
                             setHistories([...histories, {
                                 ts: +new Date(),
                                 user: {
@@ -229,7 +218,7 @@ export function TerminalBottom() {
                                         let splits: string[] = decodedString.split('data: ');
                                         splits = splits.filter(_ => _ !== '');
                                         splits.forEach(_ => {
-                                            const text: string = JSON.parse(_).choices[0].delta.content || '';
+                                            const text: string = JSON.parse(_).choices[0].delta?.content || '';
                                             fullText += text;
                                             setTokens(fullText);
                                         })
