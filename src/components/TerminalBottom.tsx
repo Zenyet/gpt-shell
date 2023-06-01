@@ -279,7 +279,7 @@ export function TerminalBottom() {
             e.preventDefault();
             e.target === e.currentTarget && t_a_ref.current && t_a_ref.current.focus();
         }} className='ml-2 text-white mr-2 h-[calc(100%-1.8rem)] overflow-x-hidden overflow-y-auto rm-sc'>
-            <div className='inline-block mt-0.5 font-mono'>
+            <div className='inline-block mt-0.5 font-mono text-gray-300'>
                 {l_l}
             </div>
             <div className='flex flex-col relative mb-1'>
@@ -287,7 +287,7 @@ export function TerminalBottom() {
                     return <div key={_?.ts + i}>
                         <div className='flex items-start'>
                             <div className='flex items-center justify-center mr-2'>
-                                <span>root@sh#</span>
+                                <span className='text-gray-300'>root@sh#</span>
                                 <div
                                     className='relative flex ml-4 mr-2 bg-triangle w-6 h-4 items-center justify-center a_f'>
                                     <div className='absolute left-[-.5rem]'>
@@ -298,12 +298,12 @@ export function TerminalBottom() {
                                 </div>
                             </div>
                             <div>
-                                <span>{_?.user.command}</span>
+                                <span className='text-gray-300'>{_?.user.command}</span>
                                 <span className='ml-6 text-green-700 font-terminal'>{_?.d}</span>
                             </div>
                         </div>
                         {/*to-do: Memo 优化 markdown replies*/}
-                        <main className=''
+                        <main className='text-gray-300'
                               dangerouslySetInnerHTML={{__html: _?.isLast ? tokens : _?.assistant.replies}}></main>
                     </div>
                 })}
