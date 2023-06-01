@@ -307,8 +307,8 @@ export function TerminalBottom() {
                                 </div>
                             </div>
                             <div>
+                                {_?.d && <span className='mr-2 text-green-700 font-mono text-sm'>{_?.d}</span>}
                                 <span className='text-gray-300'>{_?.user.command}</span>
-                                <span className='ml-6 text-green-700 font-terminal'>{_?.d}</span>
                             </div>
                         </div>
                         {/*to-do: Memo 优化 markdown replies*/}
@@ -319,7 +319,7 @@ export function TerminalBottom() {
                 <div style={{position: processing ? 'absolute' : 'static', zIndex: processing ? '-1' : '1', bottom: 0}}
                      className='flex items-start w-[100%]'>
                     <div className='relative flex items-center justify-center'>
-                        <span>root@sh#</span>
+                        <span className='text-gray-300'>root@sh#</span>
                         <div className='relative flex ml-4 mr-2 bg-triangle w-6 h-4 items-center justify-center a_f'>
                             <div className='absolute left-[-.5rem]'>
                                 <div className='t_t'></div>
@@ -332,7 +332,7 @@ export function TerminalBottom() {
                         <span className='absolute left-0 opacity-70 z-0'>{sug}</span>
                         <TextareaAutosize ref={t_a_ref} value={prompt} onInput={handleInput} onKeyDown={handlePress}
                                           autoFocus
-                                          className='w-[100%] caret-w-2 resize-none focus:outline-none bg-transparent'>
+                                          className='text-gray-300 w-[100%] caret-w-2 resize-none focus:outline-none bg-transparent'>
                         </TextareaAutosize>
                     </div>
                 </div>
