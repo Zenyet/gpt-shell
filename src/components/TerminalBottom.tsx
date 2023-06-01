@@ -4,6 +4,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 // import {OpenAIApi, Configuration} from "openai";
 import {useEffect, useRef, useState} from "react";
 import {dateF, genL_L} from "../helpers";
+import {Completions} from "../api";
 
 type History = {
     ts: number
@@ -62,29 +63,6 @@ export function TerminalBottom() {
     useEffect(() => {
         setIdx(cmdMaps.length);
     }, [cmdMaps]);
-
-    // const configuration = new Configuration({
-    //     apiKey: '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'
-    // })
-
-    // https://api.openai.com/v1/chat/completions
-    const apiUrl = 'https://thoughtflow.org/reverse/v1/chat/completions';
-
-    const fetchOptions = {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer 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`,
-            'test': 'test'
-        },
-        body: JSON.stringify({
-            model: 'gpt-3.5-turbo',
-            messages: [{role: "user", content: prompt}],
-            temperature: 0.6,
-            stream: true,
-        }),
-    };
 
     function handleInput(e: FormEvent) {
         const t = e.target as HTMLInputElement;
@@ -178,7 +156,38 @@ export function TerminalBottom() {
                                 isLast: true
                             }]);
 
-                            const {body} = await fetch(apiUrl, {...fetchOptions, signal: c_tRef.current.signal});
+                            const context = [];
+
+                            if (histories.length) {
+                                histories.slice(-2).forEach(_ => {
+                                    context.push({
+                                        "role": _.user.role,
+                                        "content": _.user.command
+                                    });
+                                    context.push({
+                                        "role": _.assistant.role,
+                                        "content": _.assistant.replies
+                                    });
+                                })
+                            } else if (localStorage.getItem('store')) {
+                                const r_c = JSON.parse(localStorage.getItem('store')) || [];
+                                r_c.slice(-2).forEach(_ => {
+                                    context.push({
+                                        "role": _.user.role,
+                                        "content": _.user.command
+                                    });
+                                    context.push({
+                                        "role": _.assistant.role,
+                                        "content": _.assistant.replies
+                                    });
+                                })
+                            }
+
+                            const {body} = await Completions([
+                                {"role": "system", "content": "You are a helpful assistant."},
+                                ...context,
+                                {"role": "user", "content": prompt}
+                            ], c_tRef.current.signal);
 
                             setReq(false);
                             const d = new TextDecoder('utf8');
