@@ -119,7 +119,8 @@ export function TerminalBottom() {
                                     <li class="ml-3 mt-2">clear - Clear the screen</li>
                                     <li class="ml-3">history - Show all history</li>
                                     <li class="ml-3">exit - Fake exit...</li>
-                                    <li class="ml-3 mb-2">press up arrow / down arrow - Select history commands</li>
+                                    <li class="ml-3">press tab - Auto complete</li>
+                                    <li class="ml-3 mb-2.5">press up arrow / down arrow - Select history commands</li>
                                 </ul>`,
                                 role: 'assistant'
                             },
