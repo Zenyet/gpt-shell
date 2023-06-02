@@ -182,11 +182,11 @@ export function TerminalBottom() {
                                         break;
                                     }
                                     if(!commands.includes(histories[i].user.command)) {
-                                        context.push({
+                                        context.unshift({
                                             "role": histories[i].user.role,
                                             "content": histories[i].user.command
                                         })
-                                        context.push({
+                                        context.unshift({
                                             "role": histories[i].assistant.role,
                                             "content": histories[i].assistant.replies
                                         })
