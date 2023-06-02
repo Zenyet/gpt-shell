@@ -177,16 +177,15 @@ export function TerminalBottom() {
                             const context = [];
 
                             if (histories.length) {
-                                for (let i = histories.length - 1; i > 0 ; i--) {
-                                    if(context.length === 4) {
+                                for (let i = histories.length - 1; i >= 0; i--) {
+                                    if (context.length === 4) {
                                         break;
                                     }
-                                    if(!commands.includes(histories[i].user.command)) {
+                                    if (!commands.includes(histories[i].user.command)) {
                                         context.unshift({
                                             "role": histories[i].user.role,
                                             "content": histories[i].user.command
-                                        })
-                                        context.unshift({
+                                        }, {
                                             "role": histories[i].assistant.role,
                                             "content": histories[i].assistant.replies
                                         })
