@@ -177,16 +177,21 @@ export function TerminalBottom() {
                             const context = [];
 
                             if (histories.length) {
-                                histories.slice(-2).forEach(_ => {
-                                    context.push({
-                                        "role": _.user.role,
-                                        "content": _.user.command
-                                    });
-                                    context.push({
-                                        "role": _.assistant.role,
-                                        "content": _.assistant.replies
-                                    });
-                                })
+                                for (let i = histories.length - 1; i > 0 ; i--) {
+                                    if(context.length === 4) {
+                                        break;
+                                    }
+                                    if(!commands.includes(histories[i].user.command)) {
+                                        context.push({
+                                            "role": histories[i].user.role,
+                                            "content": histories[i].user.command
+                                        })
+                                        context.push({
+                                            "role": histories[i].assistant.role,
+                                            "content": histories[i].assistant.replies
+                                        })
+                                    }
+                                }
                             } else if (localStorage.getItem('store')) {
                                 const r_c = JSON.parse(localStorage.getItem('store')) || [];
                                 r_c.slice(-2).forEach(_ => {
