@@ -1,5 +1,5 @@
 import {TerminalBox} from "./components/TerminalBox";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 function App() {
 
@@ -34,6 +34,22 @@ function App() {
             "model": "text-davinci-002-render-sha-mobile",
         }),
     };
+
+    const [bingUrl, setURL] = useState<string>('');
+
+    useEffect(() => {
+        fetch('https://thoughtflow.org/bing-wallpaper', {
+            method: 'GET',
+            headers: {
+                'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
+                'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            }
+        }).then(resp => resp.json()).then(json => {
+            const baseURL = "https://www.bing.com";
+            const {images: [{url}]} = json;
+            setURL(baseURL + url);
+        })
+    }, []);
 
     async function handleClick() {
         try {
@@ -78,7 +94,7 @@ function App() {
 
 
     return (
-        <div className='flex items-center justify-center h-[100vh]'>
+        <div style={{background: `url(${bingUrl})`}} className="flex items-center justify-center h-[100vh]">
             <TerminalBox/>
                 {/*<button onClick={() => handleClick()} className='bg-blue-500 px-1 py-0.5 rounded-md text-white'>test*/}
                 {/*</button>*/}
