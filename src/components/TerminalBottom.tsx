@@ -338,7 +338,7 @@ export function TerminalBottom() {
                               dangerouslySetInnerHTML={{__html: _?.isLast ? tokens : _?.assistant.replies}}></main>
                     </div>
                 })}
-                <div style={{position: processing ? 'absolute' : 'static', zIndex: processing ? '-1' : '1', bottom: 0}}
+                <div style={{position: processing ? 'absolute' : 'static', opacity: processing ? '0' : '1', bottom: 0}}
                      className='flex items-start w-[100%]'>
                     <div className='relative flex items-center justify-center'>
                         <span className='text-gray-300'>root@sh#</span>
