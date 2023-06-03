@@ -101,7 +101,7 @@ export function TerminalBottom() {
                     const filter_date = splits[1].split('grep')[1].trim();
                     const copy = his.filter(_ => _.d.split(' ')[0] === filter_date);
                     setHistories([...copy]);
-                } else {
+                } else if(prompt === 'history'){
                     setHistories([...his]);
                 }
             } else {
@@ -115,7 +115,7 @@ export function TerminalBottom() {
                             },
                             assistant: {
                                 replies: `<ul>
-                                    <span>Welcome to gpt-shell🐚! Try some of the commands below.</span>
+                                    <span>Welcome to gpt-shell 🐚 ! Try some of the commands below.</span>
                                     <li class="ml-3 mt-2">clear - Clear the screen</li>
                                     <li class="ml-3">history - Show all history</li>
                                     <li class="ml-3">exit - Fake exit...</li>
