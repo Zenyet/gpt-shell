@@ -13,7 +13,7 @@ type History = {
         role: string
     }
     assistant?: {
-        replies: string
+        replies: string | ReactElement
         role: string
     },
     isLast?: boolean,
@@ -114,14 +114,29 @@ export function TerminalBottom() {
                                 role: 'user'
                             },
                             assistant: {
-                                replies: `<ul>
+                                replies: <ul>
                                     <span>Welcome to gpt-shell 🐚 ! Try some of the commands below.</span>
-                                    <li class="ml-3 mt-2">clear - Clear the screen</li>
-                                    <li class="ml-3">history - Show all history</li>
-                                    <li class="ml-3">exit - Fake exit...</li>
-                                    <li class="ml-3">press tab - Auto complete</li>
-                                    <li class="ml-3 mb-2.5">press up arrow / down arrow - Select history commands</li>
-                                </ul>`,
+                                    <li className="ml-3 mt-2"><span className='text-red-400'>./setup</span> - Setup
+                                    </li>
+                                    <li className="ml-3"><span className='text-red-400'>clear</span> - Clear the
+                                        screen
+                                    </li>
+                                    <li className="ml-3"><span className='text-red-400'>history</span> - Show all
+                                        history
+                                    </li>
+                                    <li className="ml-3"><span
+                                        className='text-red-400'>{'history | grep <yyyy-MM-dd>'}</span> - Filter history
+                                    </li>
+                                    <li className="ml-3"><span className='text-red-400'>exit</span> - Fake exit...</li>
+                                    <li className="ml-3">press <span className='text-red-400'>tab</span> - Auto complete
+                                    </li>
+                                    <li className="ml-3">press <span className='text-red-400'>ctrl + c</span> - Abort request
+                                    </li>
+                                    <li className="ml-3 mb-2.5">press <span
+                                        className='text-red-400'>up arrow</span> / <span className='text-red-400'>down arrow</span> -
+                                        Select history commands
+                                    </li>
+                                </ul>,
                                 role: 'assistant'
                             },
                             ts: +new Date()
