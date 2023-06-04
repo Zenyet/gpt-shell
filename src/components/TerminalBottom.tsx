@@ -334,8 +334,7 @@ export function TerminalBottom() {
                             </div>
                         </div>
                         {/*to-do: Memo 优化 markdown replies*/}
-                        <main className='text-gray-300'
-                              dangerouslySetInnerHTML={{__html: _?.isLast ? tokens : _?.assistant.replies}}></main>
+                        <main className='text-gray-300'>{_?.isLast ? tokens : _?.assistant.replies}</main>
                     </div>
                 })}
                 <div style={{position: processing ? 'absolute' : 'static', opacity: processing ? '0' : '1', bottom: 0}}
