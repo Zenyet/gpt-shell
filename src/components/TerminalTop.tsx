@@ -1,16 +1,18 @@
-import {useState} from "react";
-
 export function TerminalTop() {
-    const [isF, setIsF] = useState<boolean>(false);
     const handleClick = () => {
-        if (isF) {
-            document.exitFullscreen().then(() => {
-                setIsF(false);
-            })
+        const d = document as any;
+        if (d.fullscreenElement || d.webkitFullscreenElement) {
+            if (d.webkitExitFullscreen) {
+                d.webkitExitFullscreen();
+            } else {
+                d.exitFullscreen().catch();
+            }
         } else {
-            document.body.requestFullscreen().then(() => {
-                document.fullscreenElement && setIsF(true);
-            }); // just for fun :)
+            if (d.body.webkitRequestFullscreen) {
+                d.body.webkitRequestFullscreen();
+            } else {
+                d.body.requestFullscreen().catch();
+            }
         }
     }
 
