@@ -101,7 +101,7 @@ export function TerminalBottom() {
                     const filter_date = splits[1].split('grep')[1].trim();
                     const copy = his.filter(_ => _.d.split(' ')[0] === filter_date);
                     setHistories([...copy]);
-                } else if(prompt === 'history'){
+                } else if (prompt === 'history') {
                     setHistories([...his]);
                 }
             } else {
@@ -285,16 +285,16 @@ export function TerminalBottom() {
             c_tRef.current = new AbortController();
             setProc(false);
             setReq(false);
-        } else if (e.key === 'Tab') {
+        } else if (!isReq && !processing && e.key === 'Tab') {
             e.preventDefault();
             sug && setPrompt(sug);
-        } else if (e.code === 'ArrowUp') {
+        } else if (!isReq && !processing && e.code === 'ArrowUp') {
             e.preventDefault();
             if (idx > 0) {
                 setIdx(idx - 1);
                 setPrompt(cmdMaps[idx - 1] || '');
             }
-        } else if (e.code === 'ArrowDown') {
+        } else if (!isReq && !processing && e.code === 'ArrowDown') {
             e.preventDefault();
             // idx < histories.length && setIdx(idx + 1);
             if (idx < cmdMaps.length) {
