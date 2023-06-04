@@ -100,9 +100,31 @@ export function TerminalBottom() {
                 if (splits[1]) {
                     const filter_date = splits[1].split('grep')[1].trim();
                     const copy = his.filter(_ => _.d.split(' ')[0] === filter_date);
-                    setHistories([...copy]);
+                    setHistories([{
+                        user: {
+                            role: 'user',
+                            command: 'history | grep ' + filter_date
+                        },
+                        assistant: {
+                            role: 'assistant',
+                            replies: ''
+                        },
+                        isLast: false,
+                        ts: +new Date()
+                    }, ...copy]);
                 } else if (prompt === 'history') {
-                    setHistories([...his]);
+                    setHistories([{
+                        user: {
+                            role: 'user',
+                            command: 'history'
+                        },
+                        assistant: {
+                            role: 'assistant',
+                            replies: ''
+                        },
+                        isLast: false,
+                        ts: +new Date()
+                    }, ...his]);
                 }
             } else {
                 switch (prompt) {
@@ -321,7 +343,6 @@ export function TerminalBottom() {
 
     return (
         <div ref={con_ref} onClick={e => {
-            // console.log(e.target)
             e.preventDefault();
             e.target === e.currentTarget && t_a_ref.current && t_a_ref.current.focus();
         }} className='ml-2 text-white mr-2 h-[calc(100%-1.8rem)] overflow-x-hidden overflow-y-auto rm-sc'>
