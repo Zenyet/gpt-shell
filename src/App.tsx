@@ -94,7 +94,8 @@ function App() {
 
 
     return (
-        <div style={{background: `url(${bingUrl})`}} className="flex items-center justify-center h-[100vh]">
+        <div style={{backgroundImage: `url(${bingUrl})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}
+             className="flex items-center justify-center h-[100vh]">
             <TerminalBox/>
                 {/*<button onClick={() => handleClick()} className='bg-blue-500 px-1 py-0.5 rounded-md text-white'>test*/}
                 {/*</button>*/}
