@@ -1,10 +1,11 @@
-import type {FormEvent, KeyboardEvent} from "react";
+import type {FormEvent, KeyboardEvent, ReactElement} from "react";
 import TextareaAutosize from 'react-textarea-autosize';
 // import {debounce} from "../helpers";
 // import {OpenAIApi, Configuration} from "openai";
-import {useEffect, useRef, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {dateF, genL_L} from "../helpers";
 import {Completions} from "../api";
+import {ModalContext} from "../context";
 
 type History = {
     ts: number
@@ -20,9 +21,11 @@ type History = {
     d?: string
 }
 
-const commands: string[] = ["clear", "history", "exit", "help"];
+const commands: string[] = ["clear", "history", "exit", "help", "./setup"];
 
 export function TerminalBottom() {
+    const {openModal} = useContext(ModalContext);
+
     const [sug, setSug] = useState<string>('');
     const [l_l, setL_L] = useState<string>('');
     const [prompt, setPrompt] = useState<string>('');
@@ -186,6 +189,11 @@ export function TerminalBottom() {
                         setHistories([]);
                         break;
                     }
+                    case './setup': {
+                        setSug('');
+                        openModal();
+                        break;
+                    }
                     case '': {
                         // setHistories([...histories, {command: `${prompt}`, content: false}]);
                         break;
@@ -305,7 +313,7 @@ export function TerminalBottom() {
             }
 
             setPrompt('');
-        } else if (isReq || processing && e.ctrlKey && e.key === 'c') {
+        } else if (e.ctrlKey && e.key === 'c' && processing) {
             setSug('');
             const old_rc = JSON.parse(localStorage.getItem('store')) || [];
             const copy = [...histories];

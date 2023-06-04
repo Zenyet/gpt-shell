@@ -10,6 +10,9 @@ export default {
                 "ter-top": "#353534",
                 "ter-border": "#777776",
                 "triangle": "#0073cc",
+                "st-bg": '#272725',
+                "st-top": '#3a3a39',
+                "st-bt": "#0d0c0d"
             },
             animation: {
                 breath: "breath 1s ease-in-out infinite"

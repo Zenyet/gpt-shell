@@ -1,5 +1,7 @@
 import {TerminalBox} from "./components/TerminalBox";
 import {useEffect, useState} from "react";
+import {SetupModal} from "./components/SetupModal.tsx";
+import {useModal} from "./hooks/useModal.ts";
 
 function App() {
 
@@ -92,16 +94,20 @@ function App() {
         return null;
     }
 
+    const [Provider, isOpen, openModal, closeModal] = useModal();
 
     return (
         <div style={{backgroundImage: `url(${bingUrl})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}
              className="flex items-center justify-center h-[100vh]">
-            <TerminalBox/>
-                {/*<button onClick={() => handleClick()} className='bg-blue-500 px-1 py-0.5 rounded-md text-white'>test*/}
-                {/*</button>*/}
-                {/*<main>*/}
-                {/*    {reply}*/}
-                {/*</main>*/}
+            <Provider value={{openModal, closeModal}}>
+                <SetupModal isOpen={isOpen}/>
+                <TerminalBox/>
+            </Provider>
+            {/*    <button onClick={() => handleClick()} className='bg-blue-500 px-1 py-0.5 rounded-md text-white'>test*/}
+            {/*    </button>*/}
+            {/*    <main>*/}
+            {/*        {reply}*/}
+            {/*    </main>*/}
         </div>
     )
 }
