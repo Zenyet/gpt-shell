@@ -91,7 +91,8 @@ export function TerminalBottom() {
         /**
          * !isReq && !processing 防止在 Enter 后有意无意的继续 Enter 导致的 State 和 请求问题
          */
-        if (!isReq && !processing && !e.shiftKey && !e.nativeEvent.isComposing && e.key === 'Enter') {
+        const {isComposing} = e.nativeEvent;
+        if (!isReq && !processing && !e.shiftKey && !isComposing && e.key === 'Enter') {
             e.preventDefault();
             // const t = e.target as HTMLInputElement;
             setCmdM([...cmdMaps, prompt]);
@@ -155,7 +156,8 @@ export function TerminalBottom() {
                                     <li className="ml-3"><span className='text-red-400'>exit</span> - Fake exit...</li>
                                     <li className="ml-3">press <span className='text-red-400'>tab</span> - Auto complete
                                     </li>
-                                    <li className="ml-3">press <span className='text-red-400'>ctrl + c</span> - Abort request
+                                    <li className="ml-3">press <span className='text-red-400'>ctrl + c</span> - Abort
+                                        request
                                     </li>
                                     <li className="ml-3 mb-2.5">press <span
                                         className='text-red-400'>up arrow</span> / <span className='text-red-400'>down arrow</span> -
@@ -342,7 +344,7 @@ export function TerminalBottom() {
             c_tRef.current = new AbortController();
             setProc(false);
             setReq(false);
-        } else if (!isReq && !processing && e.key === 'Tab') {
+        } else if (!isReq && !processing && !isComposing && e.key === 'Tab') {
             e.preventDefault();
             sug && setPrompt(sug);
         } else if (!isReq && !processing && e.code === 'ArrowUp') {
