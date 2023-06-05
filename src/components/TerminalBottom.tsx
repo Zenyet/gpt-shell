@@ -256,8 +256,7 @@ export function TerminalBottom() {
                                     context.push({
                                         "role": _.user.role,
                                         "content": _.user.command
-                                    });
-                                    context.push({
+                                    }, {
                                         "role": _.assistant.role,
                                         "content": _.assistant.replies
                                     });
