@@ -236,6 +236,18 @@ export function TerminalBottom() {
                                         })
                                     }
                                 }
+                                if (context.length < 1) {
+                                    const r_c = JSON.parse(localStorage.getItem('store')) || [];
+                                    r_c.slice(-2).forEach(_ => {
+                                        context.push({
+                                            "role": _.user.role,
+                                            "content": _.user.command
+                                        }, {
+                                            "role": _.assistant.role,
+                                            "content": _.assistant.replies
+                                        });
+                                    })
+                                }
                             } else if (localStorage.getItem('store')) {
                                 const r_c = JSON.parse(localStorage.getItem('store')) || [];
                                 r_c.slice(-2).forEach(_ => {
