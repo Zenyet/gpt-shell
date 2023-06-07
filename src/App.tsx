@@ -113,20 +113,24 @@ function App() {
                 localStorage.setItem('theme-config', JSON.stringify({
                     opacity,
                     blur
-                }))
+                }));
+                clearTimeout(timer.current.timer1);
+                timer.current.timer1 = null;
             }, 300);
         }
     }
 
     const changeBlur = (blur: number) => {
-        clearTimeout(timer.current.timer2);
+        timer.current.timer2 && clearTimeout(timer.current.timer2);
         setBlur(blur);
         if (!timer.current.timer1) {
             timer.current.timer2 = setTimeout(() => {
                 localStorage.setItem('theme-config', JSON.stringify({
                     opacity,
                     blur
-                }))
+                }));
+                clearTimeout(timer.current.timer2);
+                timer.current.timer2 = null;
             }, 300);
         }
     }
