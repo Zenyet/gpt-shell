@@ -96,12 +96,50 @@ function App() {
 
     const [Provider, isOpen, openModal, closeModal] = useModal();
 
+    const themeConfig = JSON.parse(localStorage.getItem('theme-config')) || {};
+
+    const [opacity, setOP] = useState<string>(themeConfig.opacity || '50%');
+    const [blur, setBlur] = useState<number>(themeConfig.blur || 0);
+    const timer = useRef<{ timer1: number | null, timer2: number | null }>({
+        timer1: null,
+        timer2: null
+    })
+
+    const changeOpacity = (opacity: string) => {
+        timer.current.timer1 && clearTimeout(timer.current.timer1);
+        setOP(opacity);
+        if (!timer.current.timer2) {
+            timer.current.timer1 = setTimeout(() => {
+                localStorage.setItem('theme-config', JSON.stringify({
+                    opacity,
+                    blur
+                }))
+            }, 300);
+        }
+    }
+
+    const changeBlur = (blur: number) => {
+        clearTimeout(timer.current.timer2);
+        setBlur(blur);
+        if (!timer.current.timer1) {
+            timer.current.timer2 = setTimeout(() => {
+                localStorage.setItem('theme-config', JSON.stringify({
+                    opacity,
+                    blur
+                }))
+            }, 300);
+        }
+    }
+
+
     return (
         <div style={{backgroundImage: `url(${bingUrl})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}
              className="flex items-center justify-center h-[100vh]">
             <Provider value={{openModal, closeModal}}>
-                <SetupModal isOpen={isOpen}/>
-                <TerminalBox/>
+                <TerminalBox opacity={opacity} blur={blur}/>
+                <SetupModal isOpen={isOpen} defaultOpacity={parseInt(themeConfig.opacity)} defaultBlur={blur / 0.32}
+                            changeBlur={changeBlur}
+                            changeOpacity={changeOpacity}/>
             </Provider>
             {/*    <button onClick={() => handleClick()} className='bg-blue-500 px-1 py-0.5 rounded-md text-white'>test*/}
             {/*    </button>*/}

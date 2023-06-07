@@ -82,3 +82,32 @@ p, h1, h2, h3, h4, h5, h6 {
     border-color: transparent transparent #0074cc transparent;
 }
 
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; /*清除默认样式*/
+    height: 1.25rem; /*设置滑块高度*/
+    width: 0.625rem; /*设置滑块宽度*/
+    background: rgb(107, 114, 128); /*设置背景色*/
+    border-radius: 1rem; /*加个圆角边*/
+    transform: translateX(-3px);
+    position: relative;
+    z-index: 99;
+}
+
+input[type=range]::-moz-range-thumb {
+    -moz-appearance: none; /*清除默认样式*/
+    height: 1.25rem; /*设置滑块高度*/
+    width: 0.625rem; /*设置滑块宽度*/
+    background: rgb(107, 114, 128); /*设置背景色*/
+    border-radius: 1rem; /*加个圆角边*/
+    transform: translateX(-3px);
+    position: relative;
+    z-index: 99;
+}
+
+/* 调整轨道以适应滑块溢出 */
+input[type=range]::-webkit-slider-runnable-track {
+    margin-right: -6px; /* 保留滑块溢出的空间 */
+}
+
+
+
