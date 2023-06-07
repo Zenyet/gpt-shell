@@ -98,8 +98,8 @@ function App() {
 
     const themeConfig = JSON.parse(localStorage.getItem('theme-config')) || {};
 
-    const [opacity, setOP] = useState<string>(themeConfig.opacity || '50%');
-    const [blur, setBlur] = useState<number>(themeConfig.blur || 0);
+    const [opacity, setOP] = useState<string>(themeConfig?.opacity || '50');
+    const [blur, setBlur] = useState<number>(themeConfig?.blur || 0);
     const timer = useRef<{ timer1: number | null, timer2: number | null }>({
         timer1: null,
         timer2: null
