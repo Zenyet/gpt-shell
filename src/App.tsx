@@ -1,5 +1,5 @@
 import {TerminalBox} from "./components/TerminalBox";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {SetupModal} from "./components/SetupModal.tsx";
 import {useModal} from "./hooks/useModal.ts";
 
