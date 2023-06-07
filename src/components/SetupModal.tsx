@@ -12,13 +12,13 @@ type MenuItem = {
 
 type Operation = {
     isOpen: boolean
-    defaultOpacity?: string | number
-    defaultBlur?: number
     changeOpacity?: (opacity: string) => void
     changeBlur?: (blur: number) => void
+    opacity?: string
+    blur?: number
 }
 
-export function SetupModal({isOpen, defaultOpacity, defaultBlur, changeBlur, changeOpacity}: Operation) {
+export function SetupModal({isOpen, changeBlur, changeOpacity, opacity, blur}: Operation) {
     const {closeModal} = useContext(ModalContext);
     const [curIdx, setCI] = useState<number>(0);
 
@@ -84,8 +84,7 @@ export function SetupModal({isOpen, defaultOpacity, defaultBlur, changeBlur, cha
                 </div>
                 <div className='flex-col flex items-center'>
                     {curIdx === 0 &&
-                        <Appearance defaultOpacity={defaultOpacity} defaultBlur={defaultBlur} changeBlur={changeBlur}
-                                    changeOpacity={changeOpacity}/>}
+                        <Appearance blur_={blur} opacity_={opacity} changeBlur={changeBlur} changeOpacity={changeOpacity}/>}
                     {curIdx === 1 && <Settings/>}
                 </div>
             </div>

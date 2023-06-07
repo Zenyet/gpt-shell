@@ -3,16 +3,15 @@ import * as React from 'react';
 import {useState} from "react";
 
 type Props = {
-    defaultOpacity: string | number
-    defaultBlur: number
     changeOpacity?: (opacity: string) => void
     changeBlur?: (blur: number) => void
+    blur_?: number
+    opacity_?: string
 }
 
-export function Appearance({defaultBlur, defaultOpacity, changeBlur, changeOpacity}: Props) {
-    const themeConfig = JSON.parse(localStorage.getItem('theme-config')) || {};
-    const [opacity, setOP] = useState<string>((parseInt(themeConfig.opacity) + '') || defaultOpacity as string);
-    const [blur, setBlur] = useState<number>(themeConfig.blur || defaultBlur);
+export function Appearance({changeBlur, changeOpacity, blur_, opacity_}: Props) {
+    const [opacity, setOP] = useState<string>(opacity_ || '50');
+    const [blur, setBlur] = useState<number>(blur_ / 0.32 || 0);
 
     return <div className='w-[80%]'>
         <div className='text-xs mt-5 text-gray-50'>不透明度</div>
@@ -20,22 +19,22 @@ export function Appearance({defaultBlur, defaultOpacity, changeBlur, changeOpaci
             <div className='relative w-[80%] h-2 bg-gray-600'>
                 <input value={opacity} min='0' max='100' onChange={e => {
                     setOP(e.target.value);
-                    changeOpacity(e.target.value + '%')
+                    changeOpacity(e.target.value)
                 }}
                        className='appearance-none h-2 absolute w-[100%] bg-transparent' type="range"/>
                 <span onClick={() => {
                     setOP('0')
-                    changeOpacity('0%')
+                    changeOpacity('0')
                 }}
                       className='absolute bottom-[-2px] h-3 w-1 bg-gray-500 rounded-full'></span>
                 <span onClick={() => {
                     setOP('50');
-                    changeOpacity('50%')
+                    changeOpacity('50')
                 }}
                       className='absolute left-[calc(50%-2px)] bottom-[-2px] h-3 w-1 bg-gray-500 rounded-full'></span>
                 <span onClick={() => {
                     setOP('100');
-                    changeOpacity('100%');
+                    changeOpacity('100');
                 }}
                       className='absolute right-0 bottom-[-2px] h-3 w-1 bg-gray-500 rounded-full'></span>
             </div>
@@ -44,7 +43,7 @@ export function Appearance({defaultBlur, defaultOpacity, changeBlur, changeOpaci
                        value={opacity}
                        onChange={e => {
                            setOP(e.target.value);
-                           changeOpacity(e.target.value + '%')
+                           changeOpacity(e.target.value)
                        }} type="number"/>
                 <span className='absolute translate-x-1 text-gray-50'>%</span>
             </div>

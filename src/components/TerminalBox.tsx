@@ -10,7 +10,7 @@ export function TerminalBox({opacity, blur}: ThemeConfig) {
     return (
         <div
             style={{
-                backgroundColor: 'rgba(0,0,0,' + opacity + ')',
+                backgroundColor: 'rgba(0,0,0,' + opacity + '%)',
                 backdropFilter: 'blur(' + (~~blur) + 'px)',
                 WebkitBackdropFilter: 'blur(' + (~~blur) + 'px)'
             }}

@@ -141,7 +141,9 @@ function App() {
              className="flex items-center justify-center h-[100vh]">
             <Provider value={{openModal, closeModal}}>
                 <TerminalBox opacity={opacity} blur={blur}/>
-                <SetupModal isOpen={isOpen} defaultOpacity={parseInt(themeConfig.opacity)} defaultBlur={blur / 0.32}
+                <SetupModal isOpen={isOpen}
+                            opacity={opacity}
+                            blur={blur}
                             changeBlur={changeBlur}
                             changeOpacity={changeOpacity}/>
             </Provider>
