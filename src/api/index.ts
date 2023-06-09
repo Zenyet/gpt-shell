@@ -19,7 +19,7 @@ export async function Completions(
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authorization: `Bearer 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`,
+            Authorization: `Bearer ${apiKey}`,
             'test': 'test'
         },
         body: JSON.stringify({
