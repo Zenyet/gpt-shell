@@ -235,6 +235,9 @@ export function TerminalBottom({mode}: { mode: string }) {
                                 const contextLen = config?.['api']?.history || 4;
                                 if (histories.length) {
                                     for (let i = histories.length - 1; i >= 0; i--) {
+                                        if (histories[i].error) {
+                                            continue;
+                                        }
                                         if (context.length === contextLen) {
                                             break;
                                         }
@@ -346,6 +349,9 @@ export function TerminalBottom({mode}: { mode: string }) {
                                 let conversation_id;
                                 if (histories.length) {
                                     for (let i = histories.length - 1; i >= 0; i--) {
+                                        if(histories[i].error) {
+                                            continue
+                                        }
                                         if ((histories[i] as ChatHistory).id && (histories[i] as ChatHistory).conversation_id) { // 返回id 和 对话id
                                             parent_message_id = (histories[i] as ChatHistory).id;
                                             conversation_id = (histories[i] as ChatHistory).conversation_id;
