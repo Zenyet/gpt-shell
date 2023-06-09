@@ -1,6 +1,8 @@
 // @flow
 import * as React from 'react';
-import {ReactElement, ReactNode, useState} from "react";
+import {ReactElement, ReactNode, useEffect, useRef, useState} from "react";
+import {ApiSetting} from "./ApiSetting.tsx";
+import {ChatSetting} from "./ChatSetting.tsx";
 
 const Radio = ({value, isChecked, handleClick, children}: {
     value: string,
@@ -8,7 +10,6 @@ const Radio = ({value, isChecked, handleClick, children}: {
     handleClick?: (option: string) => void,
     children: ReactNode | ReactElement | string
 }) => {
-
     return <label onClick={() => handleClick(value)} className='my-1 relative flex items-center cursor-pointer'>
         <span className='mr-1'>
             <input onChange={() => {
@@ -24,16 +25,22 @@ const Radio = ({value, isChecked, handleClick, children}: {
     </label>
 }
 
+export function Settings({toggleMode}: { toggleMode: (mode: string) => void }) {
+    const curModeRef = useRef<string>(null);
 
-export function Settings() {
-    const [mode, setMode] = useState<string>('API');
+    if (!curModeRef.current) {
+        curModeRef.current = JSON.parse(localStorage.getItem('config'))?.mode || 'api';
+    }
+
+    const [mode, setMode] = useState<string>(curModeRef.current || 'api');
+
     const options = [
         {
-            value: 'API',
+            value: 'api',
             label: 'API',
         },
         {
-            value: 'ChatGPT-ReverseProxy',
+            value: 'chatgpt-reverse',
             label: <>
                 ChatGPT反代(由zhile.io大佬提供的 <a
                 className='text-blue-500'
@@ -42,14 +49,23 @@ export function Settings() {
         }
     ];
 
-    const handleClick = (value: string) => {
-        setMode(value);
+    const updateConfig = (mode: string) => {
+        const new_config = JSON.parse(localStorage.getItem('config')) || {};
+        new_config.mode = mode;
+        localStorage.setItem('config', JSON.stringify({...new_config}));
+    }
+
+    const handleClick = (mode: string) => {
+        setMode(mode);
+        curModeRef.current = mode;
+        toggleMode(mode);
+        updateConfig(mode);
     }
 
     return (
-        <div className='w-[80%]'>
-            <div className='flex mt-4'>
-                <span className='text-xs text-gray-50 my-1'>模式: </span>
+        <div className='w-[90%]'>
+            <div className='flex mt-4 mb-2'>
+                <span className='w-[18%] text-right text-xs text-gray-50 my-1'>模式: </span>
                 <div className='flex flex-col items-start ml-4'>
                     {options.map((_, idx) => {
                         return <Radio handleClick={handleClick} key={_.value + idx} isChecked={_.value === mode}
@@ -57,6 +73,7 @@ export function Settings() {
                     })}
                 </div>
             </div>
+            {mode === 'api' ? <ApiSetting/> : <ChatSetting/>}
         </div>
     );
 }
