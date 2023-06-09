@@ -36,7 +36,6 @@ function App() {
         curModeRef.current = cf?.mode || 'api';
         setConfig({...cf});
         localStorage.setItem('config', JSON.stringify({...cf}));
-        console.log('one time!')
     }
 
     if (!themeConfigRef.current) {

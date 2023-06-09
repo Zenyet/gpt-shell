@@ -2,7 +2,7 @@ import type {FormEvent, KeyboardEvent, ReactElement} from "react";
 import TextareaAutosize from 'react-textarea-autosize';
 // import {debounce} from "../helpers";
 // import {OpenAIApi, Configuration} from "openai";
-import {useContext, useEffect, useRef, useState} from "react";
+import {useCallback, useContext, useEffect, useRef, useState} from "react";
 import {dateF, genL_L, parse} from "../helpers";
 import {Chat, Completions} from "../api";
 import {GlobalContext} from "../context";
@@ -96,16 +96,14 @@ export function TerminalBottom({mode}: { mode: string }) {
         setPrompt(t.value);
     }
 
-    async function handlePress(e: KeyboardEvent<HTMLTextAreaElement>) {
+    const handlePress = useCallback((e: KeyboardEvent<HTMLTextAreaElement>, prompt: string) => {
         /**
          * !isReq && !processing 防止在 Enter 后有意无意的继续 Enter 导致的 State 和 请求问题
          */
         const {isComposing} = e.nativeEvent;
         if (!isReq && !processing && !e.shiftKey && !isComposing && e.key === 'Enter') {
             e.preventDefault();
-            // const t = e.target as HTMLInputElement;
             setCmdM([...cmdMaps, prompt]);
-
             if (prompt.startsWith('history')) {
                 setSug('');
                 const splits = prompt.split('|');
@@ -272,34 +270,35 @@ export function TerminalBottom({mode}: { mode: string }) {
                                         });
                                     })
                                 }
-                                const {body} = await Completions([
+                                Completions([
                                     {"role": "system", "content": "You are a helpful assistant."},
                                     ...context,
                                     {"role": "user", "content": prompt}
-                                ], c_tRef.current.signal, config[mode]);
-                                setReq(false);
-                                parse(body, piece => setTokens(piece), fullText => {
-                                    setTokens('');
-                                    setProc(false);
-                                    const old_store: APIHistory[] = JSON.parse(localStorage.getItem('api-store')) || [];
-                                    const date: Date = new Date();
-                                    const new_rc: APIHistory = {
-                                        ts: +date,
-                                        d: dateF(date),
-                                        user: {
-                                            command: prompt,
-                                            role: 'user'
-                                        },
-                                        assistant: {
-                                            role: 'assistant',
-                                            replies: fullText
-                                        },
-                                        isLast: false
-                                    };
-                                    localStorage.setItem('api-store', JSON.stringify([...old_store, new_rc]));
-                                    new_rc.d = '';
-                                    setHistories([...histories, new_rc]);
-                                }, mode).catch();
+                                ], c_tRef.current.signal, config[mode]).then(({body}) => {
+                                    setReq(false);
+                                    parse(body, piece => setTokens(piece), fullText => {
+                                        setTokens('');
+                                        setProc(false);
+                                        const old_store: APIHistory[] = JSON.parse(localStorage.getItem('api-store')) || [];
+                                        const date: Date = new Date();
+                                        const new_rc: APIHistory = {
+                                            ts: +date,
+                                            d: dateF(date),
+                                            user: {
+                                                command: prompt,
+                                                role: 'user'
+                                            },
+                                            assistant: {
+                                                role: 'assistant',
+                                                replies: fullText
+                                            },
+                                            isLast: false
+                                        };
+                                        localStorage.setItem('api-store', JSON.stringify([...old_store, new_rc]));
+                                        new_rc.d = '';
+                                        setHistories([...histories, new_rc]);
+                                    }, mode).catch();
+                                })
                             } else if (mode === 'chatgpt-reverse') {
                                 let parent_message_id: string;
                                 let conversation_id;
@@ -331,7 +330,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                                 } else {
                                     parent_message_id = uuidv4();
                                 }
-                                const {body} = await Chat([
+                                Chat([
                                         {
                                             id: uuidv4(),
                                             author: {
@@ -346,33 +345,37 @@ export function TerminalBottom({mode}: { mode: string }) {
                                     c_tRef.current.signal,
                                     config[mode],
                                     conversation_id
-                                );
-                                setReq(false);
-                                parse(body, piece => setTokens(piece), (fullText, {message_id, conversation_id}) => {
-                                    setTokens('');
-                                    setProc(false);
-                                    const old_store: ChatHistory[] = JSON.parse(localStorage.getItem('chat-store')) || [];
-                                    const date: Date = new Date();
-                                    const new_rc: ChatHistory = {
-                                        ts: +date,
-                                        d: dateF(date),
-                                        user: {
-                                            command: prompt,
-                                            role: 'user'
-                                        },
-                                        assistant: {
-                                            role: 'assistant',
-                                            replies: fullText
-                                        },
-                                        isLast: false,
-                                        id: message_id,
-                                        conversation_id,
-                                        parent_message_id
-                                    };
-                                    localStorage.setItem('chat-store', JSON.stringify([...old_store, new_rc]));
-                                    new_rc.d = '';
-                                    setHistories([...histories, new_rc]);
-                                }, mode).catch();
+                                ).then(({body}) => {
+                                    setReq(false);
+                                    parse(body, piece => setTokens(piece), (fullText, {
+                                        message_id,
+                                        conversation_id
+                                    }) => {
+                                        setTokens('');
+                                        setProc(false);
+                                        const old_store: ChatHistory[] = JSON.parse(localStorage.getItem('chat-store')) || [];
+                                        const date: Date = new Date();
+                                        const new_rc: ChatHistory = {
+                                            ts: +date,
+                                            d: dateF(date),
+                                            user: {
+                                                command: prompt,
+                                                role: 'user'
+                                            },
+                                            assistant: {
+                                                role: 'assistant',
+                                                replies: fullText
+                                            },
+                                            isLast: false,
+                                            id: message_id,
+                                            conversation_id,
+                                            parent_message_id
+                                        };
+                                        localStorage.setItem('chat-store', JSON.stringify([...old_store, new_rc]));
+                                        new_rc.d = '';
+                                        setHistories([...histories, new_rc]);
+                                    }, mode).catch();
+                                })
                             }
                         } catch (err) {
                             console.log(err.message);
@@ -415,7 +418,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                 setPrompt(cmdMaps[idx + 1] || '');
             }
         }
-    }
+    }, [histories, sug]);
 
     return (
         <div ref={con_ref} onClick={e => {
@@ -463,7 +466,8 @@ export function TerminalBottom({mode}: { mode: string }) {
                     </div>
                     <div className='flex-1 relative ml-2'>
                         <span className='absolute left-0 opacity-70 z-0'>{sug}</span>
-                        <TextareaAutosize ref={t_a_ref} value={prompt} onInput={handleInput} onKeyDown={handlePress}
+                        <TextareaAutosize ref={t_a_ref} value={prompt} onInput={handleInput}
+                                          onKeyDown={e => handlePress(e, prompt)}
                                           autoFocus
                                           className='text-gray-300 w-[100%] caret-w-2 resize-none focus:outline-none bg-transparent'>
                         </TextareaAutosize>
