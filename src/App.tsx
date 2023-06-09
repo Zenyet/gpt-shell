@@ -137,7 +137,7 @@ function App() {
 
 
     return (
-        <div style={{backgroundImage: `url(${bingUrl})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}
+        <div style={{backgroundImage: `url(${bingURL})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}
              className="flex items-center justify-center h-[100vh]">
             <Provider value={{openModal, closeModal}}>
                 <TerminalBox opacity={opacity} blur={blur}/>
