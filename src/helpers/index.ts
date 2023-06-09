@@ -2,13 +2,8 @@ type DebounceFn<T extends unknown[]> = (...args: T) => void;
 
 export function debounce<T extends any[]>(func: DebounceFn<T>, wait: number, immediate?: boolean): DebounceFn<T> {
     let timeout: ReturnType<typeof setTimeout> | null;
-
     return function (...args: T) {
         const context = this;
-        const e: any = args[0];
-        if (!e.shiftKey && e.key === 'Enter') {
-            args[0].preventDefault();
-        }
         clearTimeout(timeout as number);
         timeout = setTimeout(() => {
             timeout = null;
