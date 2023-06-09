@@ -509,6 +509,9 @@ export function TerminalBottom({mode}: { mode: string }) {
                 setIdx(idx + 1);
                 setPrompt(cmdMaps[idx + 1] || '');
             }
+        } else if (e.ctrlKey && e.key === 'l' && !processing && !isReq) {
+            setSug('');
+            setHistories([]);
         }
     }, [histories, sug]);
 
