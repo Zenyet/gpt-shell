@@ -21,7 +21,8 @@ interface APIHistory {
         role: string
     },
     isLast?: boolean,
-    d?: string
+    d?: string,
+    error?: boolean
 }
 
 interface ChatHistory extends APIHistory {
@@ -41,6 +42,7 @@ export function TerminalBottom({mode}: { mode: string }) {
     const [cmdMaps, setCmdM] = useState<string[]>([]);
     const [processing, setProc] = useState<boolean>(false);
     const [tokens, setTokens] = useState<string>('');
+    const tokensRef = useRef<string>('');
     const c_tRef = useRef<AbortController>(new AbortController());
     const [isReq, setReq] = useState<boolean>(false);
     const t_a_ref = useRef<HTMLTextAreaElement>(null);
@@ -274,10 +276,14 @@ export function TerminalBottom({mode}: { mode: string }) {
                                     {"role": "system", "content": "You are a helpful assistant."},
                                     ...context,
                                     {"role": "user", "content": prompt}
-                                ], c_tRef.current.signal, config[mode]).then(({body}) => {
+                                ], c_tRef.current.signal, config[mode]).then(body => {
                                     setReq(false);
-                                    parse(body, piece => setTokens(piece), fullText => {
+                                    parse(body, piece => {
+                                        setTokens(piece);
+                                        tokensRef.current = piece;
+                                    }, fullText => {
                                         setTokens('');
+                                        tokensRef.current = '';
                                         setProc(false);
                                         const old_store: APIHistory[] = JSON.parse(localStorage.getItem('api-store')) || [];
                                         const date: Date = new Date();
@@ -381,13 +387,17 @@ export function TerminalBottom({mode}: { mode: string }) {
                                     c_tRef.current.signal,
                                     config[mode],
                                     conversation_id
-                                ).then(({body}) => {
+                                ).then(body => {
                                     setReq(false);
-                                    parse(body, piece => setTokens(piece), (fullText, {
+                                    parse(body, piece => {
+                                        setTokens(piece);
+                                        tokensRef.current = piece;
+                                    }, (fullText, {
                                         message_id,
                                         conversation_id
                                     }) => {
                                         setTokens('');
+                                        tokensRef.current = '';
                                         setProc(false);
                                         const old_store: ChatHistory[] = JSON.parse(localStorage.getItem('chat-store')) || [];
                                         const date: Date = new Date();
@@ -462,13 +472,14 @@ export function TerminalBottom({mode}: { mode: string }) {
             const old_rc = JSON.parse(localStorage.getItem('store')) || [];
             const copy = [...histories];
             const last = copy?.length - 1;
-            copy[last].assistant.replies = tokens;
+            copy[last].assistant.replies = tokensRef.current;
             copy[last].d = dateF(new Date(copy[last].ts));
             copy[last].isLast = false;
             localStorage.setItem('store', JSON.stringify([...old_rc, copy[last]]));
             copy[last].d = '';
             setHistories([...copy]);
             setTokens('');
+            tokensRef.current = '';
             setPrompt('');
             c_tRef.current.abort();
             c_tRef.current = new AbortController();
