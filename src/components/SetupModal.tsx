@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import {ReactElement, useContext, useState} from "react";
-import {ModalContext} from "../context";
+import {GlobalContext} from "../context";
 import {Appearance} from "./Appearance.tsx";
 import {Settings} from "./Settings.tsx";
 
@@ -19,7 +19,7 @@ type Operation = {
 }
 
 export function SetupModal({isOpen, changeBlur, changeOpacity, opacity, blur}: Operation) {
-    const {closeModal} = useContext(ModalContext);
+    const {closeModal, toggleMode} = useContext(GlobalContext);
     const [curIdx, setCI] = useState<number>(0);
 
     const AppearanceIcon = () => {
@@ -84,8 +84,9 @@ export function SetupModal({isOpen, changeBlur, changeOpacity, opacity, blur}: O
                 </div>
                 <div className='flex-col flex items-center'>
                     {curIdx === 0 &&
-                        <Appearance blur_={blur} opacity_={opacity} changeBlur={changeBlur} changeOpacity={changeOpacity}/>}
-                    {curIdx === 1 && <Settings/>}
+                        <Appearance blur_={blur} opacity_={opacity} changeBlur={changeBlur}
+                                    changeOpacity={changeOpacity}/>}
+                    {curIdx === 1 && <Settings toggleMode={toggleMode}/>}
                 </div>
             </div>
         </div>
