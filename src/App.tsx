@@ -15,9 +15,28 @@ function App() {
     const [, setConfig] = useAtom(configAtom);
 
     if (!curModeRef.current) {
-        const cf = JSON.parse(localStorage.getItem('config'));
+        const cf = JSON.parse(localStorage.getItem('config')) || {
+            mode: 'api',
+            'api': {
+                model: 'gpt-3.5-turbo',
+                max_tokens: 2048,
+                temperature: 0.6,
+                history: 4,
+                useProxy: true,
+                proxyAddress: 'https://thoughtflow.org/reverse',
+                apiKey: ''
+            },
+            'chatgpt-reverse': {
+                model: 'text-davinci-002-render-sha',
+                useProxy: true,
+                proxyAddress: 'https://ai.fakeopen.com',
+                access_token: ''
+            }
+        };
         curModeRef.current = cf?.mode || 'api';
         setConfig({...cf});
+        localStorage.setItem('config', JSON.stringify({...cf}));
+        console.log('one time!')
     }
 
     if (!themeConfigRef.current) {
