@@ -29,7 +29,7 @@ function App() {
             'chatgpt-reverse': {
                 model: 'text-davinci-002-render-sha',
                 useProxy: true,
-                proxyAddress: 'https://ai.fakeopen.com',
+                proxyAddress: 'https://ai.fakeopen.com/api/conversation',
                 access_token: ''
             }
         };
