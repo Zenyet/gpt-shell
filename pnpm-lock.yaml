@@ -10,15 +10,18 @@ specifiers:
   eslint: ^8.38.0
   eslint-plugin-react-hooks: ^4.6.0
   eslint-plugin-react-refresh: ^0.3.4
+  jotai: ^2.1.1
   postcss: ^8.4.23
   react: ^18.2.0
   react-dom: ^18.2.0
   react-textarea-autosize: ^8.4.1
   tailwindcss: ^3.3.2
   typescript: ^5.0.2
+  uuid: ^9.0.0
   vite: ^4.3.2
 
 dependencies:
+  jotai: registry.npmmirror.com/jotai/2.1.1_react@18.2.0
   react: registry.npmmirror.com/react/18.2.0
   react-dom: registry.npmmirror.com/react-dom/18.2.0_react@18.2.0
 
@@ -36,6 +39,7 @@ devDependencies:
   react-textarea-autosize: registry.npmmirror.com/react-textarea-autosize/8.4.1_3pi6y6cylzraaxxtldk4o6b3zi
   tailwindcss: registry.npmmirror.com/tailwindcss/3.3.2
   typescript: registry.npmmirror.com/typescript/5.0.4
+  uuid: registry.npmmirror.com/uuid/9.0.0
   vite: registry.npmmirror.com/vite/4.3.4
 
 packages:
@@ -1799,6 +1803,21 @@ packages:
     hasBin: true
     dev: true
 
+  registry.npmmirror.com/jotai/2.1.1_react@18.2.0:
+    resolution: {integrity: sha512-LaaiuSaq+6XkwkrCtCkczyFVZOXe0dfjAFN4DVMsSZSRv/A/4xuLHnlpHMEDqvngjWYBotTIrnQ7OogMkUE6wA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/jotai/-/jotai-2.1.1.tgz}
+    id: registry.npmmirror.com/jotai/2.1.1
+    name: jotai
+    version: 2.1.1
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      react: '>=17.0.0'
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: registry.npmmirror.com/react/18.2.0
+    dev: false
+
   registry.npmmirror.com/js-sdsl/4.4.0:
     resolution: {integrity: sha512-FfVSdx6pJ41Oa+CF7RDaFmTnCaFhua+SNYQX74riGOpl96x+2jQCqEfQ2bnXu/5DPCqlRuiqyvTJM0Qjz26IVg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/js-sdsl/-/js-sdsl-4.4.0.tgz}
     name: js-sdsl
@@ -2647,6 +2666,13 @@ packages:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/util-deprecate/-/util-deprecate-1.0.2.tgz}
     name: util-deprecate
     version: 1.0.2
+    dev: true
+
+  registry.npmmirror.com/uuid/9.0.0:
+    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/uuid/-/uuid-9.0.0.tgz}
+    name: uuid
+    version: 9.0.0
+    hasBin: true
     dev: true
 
   registry.npmmirror.com/vite/4.3.4:
