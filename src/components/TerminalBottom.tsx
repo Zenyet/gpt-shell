@@ -469,13 +469,22 @@ export function TerminalBottom({mode}: { mode: string }) {
             setPrompt('');
         } else if (e.ctrlKey && e.key === 'c' && processing) {
             setSug('');
-            const old_rc = JSON.parse(localStorage.getItem('store')) || [];
+            let old_rc;
+            if (mode === 'api') {
+                old_rc = JSON.parse(localStorage.getItem('api-store')) || [];
+            } else if (mode === 'chatgpt-reverse') {
+                old_rc = JSON.parse(localStorage.getItem('chat-store')) || [];
+            }
             const copy = [...histories];
             const last = copy?.length - 1;
             copy[last].assistant.replies = tokensRef.current;
             copy[last].d = dateF(new Date(copy[last].ts));
             copy[last].isLast = false;
-            localStorage.setItem('store', JSON.stringify([...old_rc, copy[last]]));
+            if (mode === 'api') {
+                localStorage.setItem('api-store', JSON.stringify([...old_rc, copy[last]]));
+            } else if (mode === 'chatgpt-reverse') {
+                localStorage.setItem('chat-store', JSON.stringify([...old_rc, copy[last]]));
+            }
             copy[last].d = '';
             setHistories([...copy]);
             setTokens('');
