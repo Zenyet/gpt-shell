@@ -3,11 +3,14 @@ import TextareaAutosize from 'react-textarea-autosize';
 // import {debounce} from "../helpers";
 // import {OpenAIApi, Configuration} from "openai";
 import {useContext, useEffect, useRef, useState} from "react";
-import {dateF, genL_L} from "../helpers";
-import {Completions} from "../api";
-import {ModalContext} from "../context";
+import {dateF, genL_L, parse} from "../helpers";
+import {Chat, Completions} from "../api";
+import {GlobalContext} from "../context";
+import {v4 as uuidv4} from 'uuid';
+import {useAtom} from "jotai";
+import {configAtom} from "../state";
 
-type History = {
+interface APIHistory {
     ts: number
     user: {
         command: string
@@ -21,15 +24,20 @@ type History = {
     d?: string
 }
 
+interface ChatHistory extends APIHistory {
+    id: string
+    conversation_id?: string
+    parent_message_id: string
+}
+
 const commands: string[] = ["clear", "history", "exit", "help", "./setup"];
 
-export function TerminalBottom() {
-    const {openModal} = useContext(ModalContext);
-
+export function TerminalBottom({mode}: { mode: string }) {
+    const {openModal} = useContext(GlobalContext);
     const [sug, setSug] = useState<string>('');
     const [l_l, setL_L] = useState<string>('');
     const [prompt, setPrompt] = useState<string>('');
-    const [histories, setHistories] = useState<History[]>([]);
+    const [histories, setHistories] = useState<APIHistory[] | ChatHistory[]>([]);
     const [cmdMaps, setCmdM] = useState<string[]>([]);
     const [processing, setProc] = useState<boolean>(false);
     const [tokens, setTokens] = useState<string>('');
@@ -39,9 +47,10 @@ export function TerminalBottom() {
     const con_ref = useRef<HTMLDivElement>(null);
     const [idx, setIdx] = useState<number>(histories.length || 0);
 
+    const [config] = useAtom(configAtom);
+
     useEffect(() => {
         setL_L(localStorage.getItem('l_l') || 'Last login: Sun May 7 23:19:46 on Chrome');
-
         const handleBeforeUnload = (event) => {
             event.preventDefault();
             // mark last login :)
@@ -100,7 +109,12 @@ export function TerminalBottom() {
             if (prompt.startsWith('history')) {
                 setSug('');
                 const splits = prompt.split('|');
-                const his: History[] = JSON.parse(localStorage.getItem('store')) || [];
+                let his: APIHistory[] | ChatHistory[];
+                if (mode === 'api') {
+                    his = JSON.parse(localStorage.getItem('api-store')) || [];
+                } else if (mode === 'chatgpt-reverse') {
+                    his = JSON.parse(localStorage.getItem('chat-store')) || [];
+                }
                 if (splits[1]) {
                     const filter_date = splits[1].split('grep')[1].trim();
                     const copy = his.filter(_ => _.d.split(' ')[0] === filter_date);
@@ -197,16 +211,12 @@ export function TerminalBottom() {
                         break;
                     }
                     case '': {
-                        // setHistories([...histories, {command: `${prompt}`, content: false}]);
                         break;
                     }
                     default: {
-                        // setHistories([...histories, {command: `${prompt}`, content: true}]);
                         setProc(true);
                         setReq(true);
                         setSug('');
-                        // const his_copy = histories;
-
                         try {
                             setHistories([...histories, {
                                 ts: +new Date(),
@@ -220,27 +230,39 @@ export function TerminalBottom() {
                                 },
                                 isLast: true
                             }]);
-
                             const context = [];
-
-                            if (histories.length) {
-                                for (let i = histories.length - 1; i >= 0; i--) {
-                                    if (context.length === 4) {
-                                        break;
+                            if (mode === 'api') {
+                                const contextLen = config?.['api']?.history || 4;
+                                if (histories.length) {
+                                    for (let i = histories.length - 1; i >= 0; i--) {
+                                        if (context.length === contextLen) {
+                                            break;
+                                        }
+                                        if (!commands.includes(histories[i].user.command)) {
+                                            context.unshift({
+                                                "role": histories[i].user.role,
+                                                "content": histories[i].user.command
+                                            }, {
+                                                "role": histories[i].assistant.role,
+                                                "content": histories[i].assistant.replies
+                                            })
+                                        }
                                     }
-                                    if (!commands.includes(histories[i].user.command)) {
-                                        context.unshift({
-                                            "role": histories[i].user.role,
-                                            "content": histories[i].user.command
-                                        }, {
-                                            "role": histories[i].assistant.role,
-                                            "content": histories[i].assistant.replies
+                                    if (context.length < 1) {
+                                        const r_c = JSON.parse(localStorage.getItem('api-store')) || [];
+                                        r_c.slice(-contextLen).forEach(_ => {
+                                            context.push({
+                                                "role": _.user.role,
+                                                "content": _.user.command
+                                            }, {
+                                                "role": _.assistant.role,
+                                                "content": _.assistant.replies
+                                            });
                                         })
                                     }
-                                }
-                                if (context.length < 1) {
-                                    const r_c = JSON.parse(localStorage.getItem('store')) || [];
-                                    r_c.slice(-2).forEach(_ => {
+                                } else if (localStorage.getItem('api-store')) {
+                                    const r_c = JSON.parse(localStorage.getItem('api-store')) || [];
+                                    r_c.slice(-contextLen).forEach(_ => {
                                         context.push({
                                             "role": _.user.role,
                                             "content": _.user.command
@@ -250,38 +272,18 @@ export function TerminalBottom() {
                                         });
                                     })
                                 }
-                            } else if (localStorage.getItem('store')) {
-                                const r_c = JSON.parse(localStorage.getItem('store')) || [];
-                                r_c.slice(-2).forEach(_ => {
-                                    context.push({
-                                        "role": _.user.role,
-                                        "content": _.user.command
-                                    }, {
-                                        "role": _.assistant.role,
-                                        "content": _.assistant.replies
-                                    });
-                                })
-                            }
-
-                            const {body} = await Completions([
-                                {"role": "system", "content": "You are a helpful assistant."},
-                                ...context,
-                                {"role": "user", "content": prompt}
-                            ], c_tRef.current.signal);
-
-                            setReq(false);
-                            const d = new TextDecoder('utf8');
-                            const reader = await body.getReader();
-                            let fullText = ''
-
-                            while (true) {
-                                const {value, done} = await reader.read();
-                                if (done) { // stream end
+                                const {body} = await Completions([
+                                    {"role": "system", "content": "You are a helpful assistant."},
+                                    ...context,
+                                    {"role": "user", "content": prompt}
+                                ], c_tRef.current.signal, config[mode]);
+                                setReq(false);
+                                parse(body, piece => setTokens(piece), fullText => {
                                     setTokens('');
                                     setProc(false);
-                                    const old_store: History[] = JSON.parse(localStorage.getItem('store')) || [];
+                                    const old_store: APIHistory[] = JSON.parse(localStorage.getItem('api-store')) || [];
                                     const date: Date = new Date();
-                                    const new_rc = {
+                                    const new_rc: APIHistory = {
                                         ts: +date,
                                         d: dateF(date),
                                         user: {
@@ -294,28 +296,83 @@ export function TerminalBottom() {
                                         },
                                         isLast: false
                                     };
-
-                                    localStorage.setItem('store', JSON.stringify([...old_store, new_rc]));
+                                    localStorage.setItem('api-store', JSON.stringify([...old_store, new_rc]));
                                     new_rc.d = '';
                                     setHistories([...histories, new_rc]);
-
-                                    break;
-                                } else {
-                                    const decodedString = d.decode(value);
-                                    try {
-                                        //fixes string not json-parseable otherwise
-                                        let splits: string[] = decodedString.split('data: ');
-                                        splits = splits.filter(_ => _ !== '');
-                                        splits.forEach(_ => {
-                                            const text: string = JSON.parse(_).choices[0].delta?.content || '';
-                                            fullText += text;
-                                            setTokens(fullText);
-                                        })
-                                    } catch (e) {
-                                        // the last line is data: [DONE] which is not parseable either, so we catch that.
-                                        console.log('done');
+                                }, mode).catch();
+                            } else if (mode === 'chatgpt-reverse') {
+                                let parent_message_id: string;
+                                let conversation_id;
+                                if (histories.length) {
+                                    for (let i = histories.length - 1; i >= 0; i--) {
+                                        if ((histories[i] as ChatHistory).id && (histories[i] as ChatHistory).conversation_id) { // 返回id 和 对话id
+                                            parent_message_id = (histories[i] as ChatHistory).id;
+                                            conversation_id = (histories[i] as ChatHistory).conversation_id;
+                                            break;
+                                        }
                                     }
+                                    if (!parent_message_id && !conversation_id) {
+                                        const r_c: ChatHistory[] = JSON.parse(localStorage.getItem('chat-store')) || [];
+                                        for (let i = r_c.length - 1; i >= 0; i--) {
+                                            if ((r_c[i] as ChatHistory).id && (r_c[i] as ChatHistory).conversation_id) { // 返回id 和 对话id
+                                                parent_message_id = (r_c[i] as ChatHistory).id;
+                                                conversation_id = (r_c[i] as ChatHistory).conversation_id;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (!parent_message_id && !conversation_id) {
+                                        parent_message_id = uuidv4(); // 第一次发送
+                                    }
+                                } else if (localStorage.getItem('chat-store')) {
+                                    const r_c: ChatHistory[] = JSON.parse(localStorage.getItem('chat-store')) || [];
+                                    conversation_id = r_c.slice(-1)[0]?.conversation_id;
+                                    parent_message_id = r_c.slice(-1)[0]?.id;
+                                } else {
+                                    parent_message_id = uuidv4();
                                 }
+                                const {body} = await Chat([
+                                        {
+                                            id: uuidv4(),
+                                            author: {
+                                                role: 'user'
+                                            },
+                                            content: {
+                                                content_type: 'text',
+                                                parts: [prompt]
+                                            }
+                                        }
+                                    ], parent_message_id,
+                                    c_tRef.current.signal,
+                                    config[mode],
+                                    conversation_id
+                                );
+                                setReq(false);
+                                parse(body, piece => setTokens(piece), (fullText, {message_id, conversation_id}) => {
+                                    setTokens('');
+                                    setProc(false);
+                                    const old_store: ChatHistory[] = JSON.parse(localStorage.getItem('chat-store')) || [];
+                                    const date: Date = new Date();
+                                    const new_rc: ChatHistory = {
+                                        ts: +date,
+                                        d: dateF(date),
+                                        user: {
+                                            command: prompt,
+                                            role: 'user'
+                                        },
+                                        assistant: {
+                                            role: 'assistant',
+                                            replies: fullText
+                                        },
+                                        isLast: false,
+                                        id: message_id,
+                                        conversation_id,
+                                        parent_message_id
+                                    };
+                                    localStorage.setItem('chat-store', JSON.stringify([...old_store, new_rc]));
+                                    new_rc.d = '';
+                                    setHistories([...histories, new_rc]);
+                                }, mode).catch();
                             }
                         } catch (err) {
                             console.log(err.message);
@@ -324,7 +381,6 @@ export function TerminalBottom() {
                     }
                 }
             }
-
             setPrompt('');
         } else if (e.ctrlKey && e.key === 'c' && processing) {
             setSug('');
@@ -354,7 +410,6 @@ export function TerminalBottom() {
             }
         } else if (!isReq && !processing && e.code === 'ArrowDown') {
             e.preventDefault();
-            // idx < histories.length && setIdx(idx + 1);
             if (idx < cmdMaps.length) {
                 setIdx(idx + 1);
                 setPrompt(cmdMaps[idx + 1] || '');
