@@ -298,6 +298,42 @@ export function TerminalBottom({mode}: { mode: string }) {
                                         new_rc.d = '';
                                         setHistories([...histories, new_rc]);
                                     }, mode).catch();
+                                }).catch(err => {
+                                    if (err?.error?.message) {
+                                        setHistories([...histories, {
+                                            user: {
+                                                command: prompt,
+                                                role: 'user'
+                                            },
+                                            assistant: {
+                                                replies: err.error.message,
+                                                role: 'assistant'
+                                            },
+                                            ts: +new Date(),
+                                            error: true
+                                        }]);
+                                        setTokens('');
+                                        tokensRef.current = '';
+                                        setReq(false);
+                                        setProc(false);
+                                    } else {
+                                        setHistories([...histories, {
+                                            user: {
+                                                command: prompt,
+                                                role: 'user'
+                                            },
+                                            assistant: {
+                                                replies: 'network error!',
+                                                role: 'assistant'
+                                            },
+                                            ts: +new Date(),
+                                            error: true
+                                        }]);
+                                        setTokens('');
+                                        tokensRef.current = '';
+                                        setReq(false);
+                                        setProc(false);
+                                    }
                                 })
                             } else if (mode === 'chatgpt-reverse') {
                                 let parent_message_id: string;
@@ -375,6 +411,42 @@ export function TerminalBottom({mode}: { mode: string }) {
                                         new_rc.d = '';
                                         setHistories([...histories, new_rc]);
                                     }, mode).catch();
+                                }).catch(err => {
+                                    if (err.detail?.message) {
+                                        setHistories([...histories, {
+                                            user: {
+                                                command: prompt,
+                                                role: 'user'
+                                            },
+                                            assistant: {
+                                                replies: err.detail.message,
+                                                role: 'assistant'
+                                            },
+                                            ts: +new Date(),
+                                            error: true
+                                        }]);
+                                        setTokens('');
+                                        tokensRef.current = '';
+                                        setReq(false);
+                                        setProc(false);
+                                    } else {
+                                        setHistories([...histories, {
+                                            user: {
+                                                command: prompt,
+                                                role: 'user'
+                                            },
+                                            assistant: {
+                                                replies: 'network error!',
+                                                role: 'assistant'
+                                            },
+                                            ts: +new Date(),
+                                            error: true
+                                        }]);
+                                        setTokens('');
+                                        tokensRef.current = '';
+                                        setReq(false);
+                                        setProc(false);
+                                    }
                                 })
                             }
                         } catch (err) {
