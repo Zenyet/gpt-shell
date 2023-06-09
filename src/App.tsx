@@ -135,23 +135,21 @@ function App() {
         }
     }
 
+    const toggleMode = (mode: string) => {
+        setMode(mode);
+    }
 
     return (
         <div style={{backgroundImage: `url(${bingURL})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}
              className="flex items-center justify-center h-[100vh]">
-            <Provider value={{openModal, closeModal}}>
-                <TerminalBox opacity={opacity} blur={blur}/>
+            <GlobalContext.Provider value={{openModal, closeModal, toggleMode}}>
+                <TerminalBox mode={mode} opacity={opacity} blur={blur}/>
                 <SetupModal isOpen={isOpen}
                             opacity={opacity}
                             blur={blur}
                             changeBlur={changeBlur}
                             changeOpacity={changeOpacity}/>
-            </Provider>
-            {/*    <button onClick={() => handleClick()} className='bg-blue-500 px-1 py-0.5 rounded-md text-white'>test*/}
-            {/*    </button>*/}
-            {/*    <main>*/}
-            {/*        {reply}*/}
-            {/*    </main>*/}
+            </GlobalContext.Provider>
         </div>
     )
 }
