@@ -513,7 +513,7 @@ export function TerminalBottom({mode}: { mode: string }) {
             setSug('');
             setHistories([]);
         }
-    }, [histories, sug]);
+    }, [histories, sug, mode, config, processing]);
 
     return (
         <div ref={con_ref} onClick={e => {
