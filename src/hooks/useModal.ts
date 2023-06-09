@@ -1,9 +1,5 @@
-// @flow
-import * as React from 'react';
-import {Provider, useState} from "react";
-import {ModalContext} from "../context";
-
-export function useModal(): [Provider<any>, boolean, () => void, () => void] {
+import {useState} from "react";
+export function useModal(): [boolean, () => void, () => void] {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const openModal = () => {
         setIsOpen(true);
@@ -13,5 +9,5 @@ export function useModal(): [Provider<any>, boolean, () => void, () => void] {
         setIsOpen(false);
     };
 
-    return [ModalContext.Provider, isOpen, openModal, closeModal];
+    return [isOpen, openModal, closeModal];
 }
