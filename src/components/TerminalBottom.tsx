@@ -557,6 +557,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                         {!_?.isLast && <Markdown tokens={_?.assistant?.replies}/>}
                     </div>
                 })}
+                {processing && <Markdown tokens={tokens}/>}
                 <div style={{position: processing ? 'absolute' : 'static', opacity: processing ? '0' : '1', bottom: 0}}
                      className='flex items-start w-[100%]'>
                     <div className='relative flex items-center justify-center'>
