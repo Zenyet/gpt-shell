@@ -535,7 +535,7 @@ export function TerminalBottom({mode}: { mode: string }) {
             </div>
             <div className='flex flex-col relative mb-1'>
                 {histories.map((_, i) => {
-                    return <div key={_?.ts + i}>
+                    return <div key={i}>
                         <div className='flex items-start'>
                             <div className='flex items-center justify-center mr-2'>
                                 <span className='text-gray-300'>root@sh#</span>
