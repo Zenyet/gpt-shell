@@ -1,5 +1,6 @@
 import {TerminalTop} from "./TerminalTop.tsx";
 import {TerminalBottom} from "./TerminalBottom.tsx";
+import {memo} from "react";
 
 type ThemeConfig = {
     opacity: string
@@ -7,7 +8,7 @@ type ThemeConfig = {
     mode?: string
 }
 
-export function TerminalBox({opacity, blur, mode}: ThemeConfig) {
+export const TerminalBox = memo(({opacity, blur, mode}: ThemeConfig) => {
     return (
         <div
             style={{
@@ -20,4 +21,4 @@ export function TerminalBox({opacity, blur, mode}: ThemeConfig) {
             <TerminalBottom mode={mode}/>
         </div>
     );
-}
+})

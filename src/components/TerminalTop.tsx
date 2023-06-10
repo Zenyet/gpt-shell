@@ -1,4 +1,6 @@
-export function TerminalTop({mode}: { mode: string }) {
+import {memo} from "react";
+
+export const TerminalTop = memo(({mode}: { mode: string }) => {
     const handleClick = () => {
         const d = document as any;
         if (d.fullscreenElement || d.webkitFullscreenElement) {
@@ -24,4 +26,4 @@ export function TerminalTop({mode}: { mode: string }) {
             <span className='absolute left-1/2 text-gray-400 translate-x-[-50%] font-medium'>root@{mode}</span>
         </div>
     );
-}
+});
