@@ -60,6 +60,7 @@ export async function Chat(
     parent_message_id: string,
     signal: AbortSignal | null,
     chatConfig: ChatConfig,
+    keep_session: boolean,
     conversation_id?: string
 ): Promise<ReadableStream<Uint8Array>> {
     const {model, useProxy, access_token, proxyAddress} = chatConfig;
@@ -76,6 +77,9 @@ export async function Chat(
 
     if (conversation_id) {
         o['conversation_id'] = conversation_id;
+        if (!keep_session) {
+            removeSession(conversation_id, access_token).catch();
+        }
     }
 
     const fetchOptions: RequestInit = {
@@ -100,4 +104,17 @@ export async function Chat(
         }
         return response.body;
     })
+}
+
+async function removeSession(conversation_id: string, access_token: string) {
+    return fetch(`https://ai.fakeopen.com/api/conversation/${conversation_id}`, {
+        method: 'PATCH',
+        headers: {
+            "Referer": 'https://chat.zhile.io/',
+            'Content-Type': 'application/json',
+            'X-Authorization': `Bearer ${access_token}`
+        },
+        body: JSON.stringify({"is_visible": false}),
+        redirect: 'follow'
+    }).catch(err => console.log(err));
 }

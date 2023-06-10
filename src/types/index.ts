@@ -3,6 +3,7 @@ export type ChatConfig = {
     proxyAddress: string,
     useProxy: boolean,
     access_token?: string
+    keep_session?: boolean
 }
 
 export type APIConfig = {

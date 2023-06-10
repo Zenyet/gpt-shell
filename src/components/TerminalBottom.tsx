@@ -406,6 +406,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                                     ], parent_message_id,
                                     c_tRef.current.signal,
                                     config[mode],
+                                    config[mode]?.keep_session,
                                     conversation_id
                                 ).then(body => {
                                     setReq(false);

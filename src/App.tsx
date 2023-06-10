@@ -30,7 +30,8 @@ function App() {
                 model: 'text-davinci-002-render-sha',
                 useProxy: true,
                 proxyAddress: 'https://ai.fakeopen.com/api/conversation',
-                access_token: ''
+                access_token: '',
+                keep_session: true
             }
         };
         curModeRef.current = cf?.mode || 'api';

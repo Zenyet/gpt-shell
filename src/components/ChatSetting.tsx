@@ -5,13 +5,7 @@ import {debounce} from "../helpers";
 import {Select} from "./Select.tsx";
 import {useAtom} from "jotai";
 import {configAtom} from "../state";
-
-type ChatConfig = {
-    model: string,
-    proxyAddress: string,
-    useProxy: boolean
-    access_token?: string
-}
+import {ChatConfig} from "../types";
 
 export function ChatSetting() {
     const configRef = useRef(null);
@@ -50,7 +44,8 @@ export function ChatSetting() {
                     model: 'text-davinci-002-render-sha',
                     useProxy: true,
                     proxyAddress: 'https://ai.fakeopen.com/api/conversation',
-                    access_token: ''
+                    access_token: '',
+                    keep_session: true
                 };
                 setCF({...config, 'chatgpt-reverse': configRef.current});
                 localStorage.setItem('config', JSON.stringify({...config, 'chatgpt-reverse': configRef.current}))
@@ -118,6 +113,19 @@ export function ChatSetting() {
                         className='text-gray-50 appearance-none px-2 py-0.5 bg-[#3b3b3b] text-xs w-[100%] rounded-[5px]'
                         type="text"/>}
                 </div>
+            </div>
+        </div>
+        <div className='flex mb-6 items-center'>
+            <span className='w-[18%] text-right text-xs text-gray-50 my-1'>保存回话: </span>
+            <div className='flex ml-4 w-[80%] items-center'>
+                <div className='h-4 flex items-center mr-2'>
+                    <input className='accent-[#0080ff]' checked={config.keep_session} onChange={() => {
+                        updateChatConfig({...config, keep_session: !config.keep_session});
+                    }} type="checkbox"/>
+                </div>
+                <span className='text-gray-50 text-xs'>
+                    {config.keep_session ? '你的对话将会在官网显示' : '你的对话将会在官网被隐藏'}
+                </span>
             </div>
         </div>
     </>
