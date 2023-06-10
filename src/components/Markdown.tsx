@@ -9,7 +9,7 @@ export const Markdown = memo(({tokens}: {
         return tokens;
     }
     return <main className='text-gray-300'>
-        <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
+        <ReactMarkdown rehypePlugins={[[rehypeHighlight, {detect: false, ignoreMissing: true,}]]}>
             {tokens}
         </ReactMarkdown>
     </main>
