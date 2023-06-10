@@ -23,7 +23,7 @@ function App() {
                 temperature: 0.6,
                 history: 4,
                 useProxy: true,
-                proxyAddress: 'https://thoughtflow.org/reverse',
+                proxyAddress: 'https://thoughtflow.org/reverse/api-reverse',
                 apiKey: ''
             },
             'chatgpt-reverse': {
