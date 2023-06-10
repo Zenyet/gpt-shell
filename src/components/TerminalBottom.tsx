@@ -67,7 +67,6 @@ export function TerminalBottom({mode}: { mode: string }) {
     const [l_l, setL_L] = useState<string>('');
     const [prompt, setPrompt] = useState<string>('');
     const [histories, setHistories] = useState<APIHistory[] | ChatHistory[]>([]);
-    const [cmdMaps, setCmdM] = useState<string[]>([]);
     const [processing, setProc] = useState<boolean>(false);
     const [tokens, setTokens] = useState<string>('');
     const tokensRef = useRef<string>('');
@@ -75,7 +74,17 @@ export function TerminalBottom({mode}: { mode: string }) {
     const [isReq, setReq] = useState<boolean>(false);
     const t_a_ref = useRef<HTMLTextAreaElement>(null);
     const con_ref = useRef<HTMLDivElement>(null);
-    const [idx, setIdx] = useState<number>(histories.length || 0);
+    const cmdMapsRef = useRef<{
+        maps: string[],
+        idx: number
+    }>(null);
+
+    if (!cmdMapsRef.current) {
+        cmdMapsRef.current = {
+            maps: [],
+            idx: histories.length || 0
+        }
+    }
 
     const [config] = useAtom(configAtom);
 
@@ -103,8 +112,8 @@ export function TerminalBottom({mode}: { mode: string }) {
     }, [histories]);
 
     useEffect(() => {
-        setIdx(cmdMaps.length);
-    }, [cmdMaps]);
+        cmdMapsRef.current.idx = cmdMapsRef.current.maps.length;
+    }, [cmdMapsRef.current.maps.length]);
 
     function handleInput(e: FormEvent) {
         const t = e.target as HTMLInputElement;
@@ -133,7 +142,7 @@ export function TerminalBottom({mode}: { mode: string }) {
         const {isComposing} = e.nativeEvent;
         if (!isReq && !processing && !e.shiftKey && !isComposing && e.key === 'Enter') {
             e.preventDefault();
-            setCmdM([...cmdMaps, prompt]);
+            cmdMapsRef.current.maps.push(prompt);
             if (prompt.startsWith('history')) {
                 setSug('');
                 const splits = prompt.split('|');
@@ -354,7 +363,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                                 let conversation_id;
                                 if (histories.length) {
                                     for (let i = histories.length - 1; i >= 0; i--) {
-                                        if(histories[i].error) {
+                                        if (histories[i].error) {
                                             continue
                                         }
                                         if ((histories[i] as ChatHistory).id && (histories[i] as ChatHistory).conversation_id) { // 返回id 和 对话id
@@ -510,15 +519,17 @@ export function TerminalBottom({mode}: { mode: string }) {
             sug && setPrompt(sug);
         } else if (!isReq && !processing && e.code === 'ArrowUp') {
             e.preventDefault();
+            const {maps, idx} = cmdMapsRef.current;
             if (idx > 0) {
-                setIdx(idx - 1);
-                setPrompt(cmdMaps[idx - 1] || '');
+                cmdMapsRef.current.idx = idx - 1;
+                setPrompt(cmdMapsRef.current.maps[idx - 1] || '');
             }
         } else if (!isReq && !processing && e.code === 'ArrowDown') {
             e.preventDefault();
-            if (idx < cmdMaps.length) {
-                setIdx(idx + 1);
-                setPrompt(cmdMaps[idx + 1] || '');
+            const {maps, idx} = cmdMapsRef.current;
+            if (idx < maps.length) {
+                cmdMapsRef.current.idx = idx + 1;
+                setPrompt(cmdMapsRef.current.maps[idx + 1] || '');
             }
         } else if (e.ctrlKey && e.key === 'l' && !processing && !isReq) {
             setSug('');
