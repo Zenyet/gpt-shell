@@ -5,7 +5,8 @@ interface Message {
     content: string
 }
 
-const Completions_URL: string = import.meta.env.VITE_COMPLETIONS_PROXY;
+const Completions_URL: string = import.meta.env.VITE_COMPLETIONS_PROXY || 'https://thoughtflow.org/reverse/api-reverse';
+const Chat_URL: string = import.meta.env.CHATGPT_REVERSE_PROXY || 'https://ai.fakeopen.com/api/conversation';
 
 export async function Completions(
     messages: Message[],
@@ -13,7 +14,7 @@ export async function Completions(
     apiConfig: APIConfig
 ): Promise<ReadableStream<Uint8Array>> {
     const {model, temperature, max_tokens, useProxy, proxyAddress, apiKey} = apiConfig;
-    const apiURL = useProxy ? proxyAddress + '/v1/chat/completions' : Completions_URL;
+    const apiURL = useProxy ? proxyAddress : Completions_URL;
     const fetchOptions: RequestInit = {
         method: 'POST',
         headers: {
