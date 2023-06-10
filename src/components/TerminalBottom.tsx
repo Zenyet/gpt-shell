@@ -116,7 +116,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                     his = JSON.parse(localStorage.getItem('chat-store')) || [];
                 }
                 if (splits[1]) {
-                    const filter_date = splits[1].split('grep')[1].trim();
+                    const filter_date = splits[1].split('grep')[1]?.trim();
                     const copy = his.filter(_ => _.d.split(' ')[0] === filter_date);
                     setHistories([{
                         user: {
