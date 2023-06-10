@@ -522,14 +522,14 @@ export function TerminalBottom({mode}: { mode: string }) {
             const {maps, idx} = cmdMapsRef.current;
             if (idx > 0) {
                 cmdMapsRef.current.idx = idx - 1;
-                setPrompt(cmdMapsRef.current.maps[idx - 1] || '');
+                setPrompt(maps[idx - 1] || '');
             }
         } else if (!isReq && !processing && e.code === 'ArrowDown') {
             e.preventDefault();
             const {maps, idx} = cmdMapsRef.current;
             if (idx < maps.length) {
                 cmdMapsRef.current.idx = idx + 1;
-                setPrompt(cmdMapsRef.current.maps[idx + 1] || '');
+                setPrompt(maps[idx + 1] || '');
             }
         } else if (e.ctrlKey && e.key === 'l' && !processing && !isReq) {
             setSug('');
