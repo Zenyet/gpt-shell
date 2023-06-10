@@ -33,6 +33,33 @@ interface ChatHistory extends APIHistory {
 
 const commands: string[] = ["clear", "history", "exit", "help", "./setup"];
 
+const HelpCommand = () => {
+    return <ul>
+        <span>Welcome to gpt-shell 🐚 ! Try some of the commands below.</span>
+        <li className="ml-3 mt-2"><span className='text-red-400'>./setup</span> - Setup
+        </li>
+        <li className="ml-3"><span className='text-red-400'>clear / ctrl + l(L)</span> - Clear the
+            screen
+        </li>
+        <li className="ml-3"><span className='text-red-400'>history</span> - Show all
+            history
+        </li>
+        <li className="ml-3"><span
+            className='text-red-400'>{'history | grep <yyyy-MM-dd>'}</span> - Filter history
+        </li>
+        <li className="ml-3"><span className='text-red-400'>exit</span> - Fake exit...</li>
+        <li className="ml-3">press <span className='text-red-400'>tab</span> - Auto complete
+        </li>
+        <li className="ml-3">press <span className='text-red-400'>ctrl + c</span> - Abort
+            request
+        </li>
+        <li className="ml-3 mb-2.5">press <span
+            className='text-red-400'>up arrow</span> / <span className='text-red-400'>down arrow</span> -
+            Select history commands
+        </li>
+    </ul>
+}
+
 export function TerminalBottom({mode}: { mode: string }) {
     const {openModal} = useContext(GlobalContext);
     const [sug, setSug] = useState<string>('');
@@ -154,30 +181,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                                 role: 'user'
                             },
                             assistant: {
-                                replies: <ul>
-                                    <span>Welcome to gpt-shell 🐚 ! Try some of the commands below.</span>
-                                    <li className="ml-3 mt-2"><span className='text-red-400'>./setup</span> - Setup
-                                    </li>
-                                    <li className="ml-3"><span className='text-red-400'>clear</span> - Clear the
-                                        screen
-                                    </li>
-                                    <li className="ml-3"><span className='text-red-400'>history</span> - Show all
-                                        history
-                                    </li>
-                                    <li className="ml-3"><span
-                                        className='text-red-400'>{'history | grep <yyyy-MM-dd>'}</span> - Filter history
-                                    </li>
-                                    <li className="ml-3"><span className='text-red-400'>exit</span> - Fake exit...</li>
-                                    <li className="ml-3">press <span className='text-red-400'>tab</span> - Auto complete
-                                    </li>
-                                    <li className="ml-3">press <span className='text-red-400'>ctrl + c</span> - Abort
-                                        request
-                                    </li>
-                                    <li className="ml-3 mb-2.5">press <span
-                                        className='text-red-400'>up arrow</span> / <span className='text-red-400'>down arrow</span> -
-                                        Select history commands
-                                    </li>
-                                </ul>,
+                                replies: <HelpCommand/>,
                                 role: 'assistant'
                             },
                             ts: +new Date()
