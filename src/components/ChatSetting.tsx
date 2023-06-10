@@ -116,7 +116,7 @@ export function ChatSetting() {
             </div>
         </div>
         <div className='flex mb-6 items-center'>
-            <span className='w-[18%] text-right text-xs text-gray-50 my-1'>保存回话: </span>
+            <span className='w-[18%] text-right text-xs text-gray-50 my-1'>保存对话: </span>
             <div className='flex ml-4 w-[80%] items-center'>
                 <div className='h-4 flex items-center mr-2'>
                     <input className='accent-[#0080ff]' checked={config.keep_session} onChange={() => {
