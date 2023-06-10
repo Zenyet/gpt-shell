@@ -9,6 +9,7 @@ import {GlobalContext} from "../context";
 import {v4 as uuidv4} from 'uuid';
 import {useAtom} from "jotai";
 import {configAtom} from "../state";
+import {Markdown} from "./Markdown.tsx";
 
 interface APIHistory {
     ts: number
@@ -553,8 +554,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                                 <span className='text-gray-300'>{_?.user.command}</span>
                             </div>
                         </div>
-                        {/*to-do: Memo 优化 markdown replies*/}
-                        <main className='text-gray-300'>{_?.isLast ? tokens : _?.assistant.replies}</main>
+                        {!_?.isLast && <Markdown tokens={_?.assistant?.replies}/>}
                     </div>
                 })}
                 <div style={{position: processing ? 'absolute' : 'static', opacity: processing ? '0' : '1', bottom: 0}}
