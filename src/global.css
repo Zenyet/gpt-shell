@@ -50,7 +50,7 @@ p, h1, h2, h3, h4, h5, h6 {
     isolation: isolate;
 }
 
-.rm-sc::-webkit-scrollbar {
+.rm-sc::-webkit-scrollbar, #markdown pre::-webkit-scrollbar {
     -webkit-appearance: none; /*清除默认样式*/
     display: none;
 }
@@ -114,6 +114,11 @@ input[type=range]::-webkit-slider-runnable-track {
 /*
     highlight theme nord
 */
+#markdown pre {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
 .hljs, .hljs-subst {
     color: #d8dee9
 }
