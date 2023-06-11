@@ -72,13 +72,13 @@ export function ApiSetting() {
                     temperature: 0.6,
                     history: 4,
                     useProxy: true,
-                    proxyAddress: 'https://thoughtflow.org/reverse',
+                    proxyAddress: 'https://thoughtflow.org/reverse/api-reverse',
                     apiKey: ''
                 };
                 localStorage.setItem('config', JSON.stringify({...config, 'api': configRef.current}));
             }
         } catch (e) {
-            console.log('JSON parse Error');
+            console.log('JSON parse Error', e);
         }
     }
 
