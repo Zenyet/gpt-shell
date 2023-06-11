@@ -516,7 +516,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                     return <div key={i}>
                         <div className='flex items-start'>
                             <div className='flex items-center justify-center mr-2'>
-                                <span className='text-gray-300'>root@sh#</span>
+                                <span className='text-gray-300'>root@{mode || 'sh'}#</span>
                                 <div
                                     className='relative flex ml-4 mr-2 bg-triangle w-6 h-4 items-center justify-center a_f'>
                                     <div className='absolute left-[-.5rem]'>
@@ -538,7 +538,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                 <div style={{position: processing ? 'absolute' : 'static', opacity: processing ? '0' : '1', bottom: 0}}
                      className='flex items-start w-[100%]'>
                     <div className='relative flex items-center justify-center'>
-                        <span className='text-gray-300'>root@sh#</span>
+                        <span className='text-gray-300'>root@{mode || 'sh'}#</span>
                         <div className='relative flex ml-4 mr-2 bg-triangle w-6 h-4 items-center justify-center a_f'>
                             <div className='absolute left-[-.5rem]'>
                                 <div className='t_t'></div>
