@@ -19,11 +19,11 @@ export const TerminalTop = memo(({mode}: { mode: string }) => {
     }
 
     return (
-        <div className='relative w-[100%] bg-ter-top h-[1.8rem] flex items-center border-b-[1px] border-b-gray-950'>
+        <div className='relative w-[100%] bg-[#f2f3f0] dark:bg-ter-top h-[1.8rem] flex items-center border-b-[1px] border-b-gray-950'>
             <span className='bg-[#ff6057] w-3.5 h-3.5 ml-1.5 rounded-full'></span>
             <span className='bg-[#ffbc2e] w-3.5 h-3.5 ml-2 rounded-full'></span>
             <span onClick={() => handleClick()} className='bg-[#00c840] w-3.5 h-3.5 ml-2 rounded-full'></span>
-            <span className='absolute left-1/2 text-gray-400 translate-x-[-50%] font-medium'>root@{mode}</span>
+            <span className='absolute left-1/2 text-gray-600 dark:text-gray-400 translate-x-[-50%] font-medium'>root@{mode}</span>
         </div>
     );
 });

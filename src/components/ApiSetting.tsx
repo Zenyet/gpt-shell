@@ -102,14 +102,14 @@ export function ApiSetting() {
 
     return <>
         <div className='flex mb-4 items-center'>
-            <span className='w-[18%] text-right text-xs text-gray-50 my-1 '>模型: </span>
+            <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1 '>模型: </span>
             <div className='ml-4'>
                 <Select value={config.model} onChange={e => updateAPIConfig({...config, model: e.target.value}, false)}
                         options={options}/>
             </div>
         </div>
         <div className='flex mb-4 items-center'>
-            <span className='w-[18%] text-right text-xs text-gray-50 my-1 '>历史消息: </span>
+            <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1 '>历史消息: </span>
             <div className='ml-4 w-[80%]'>
                 <InputRange value={config.history} min={0} max={24}
                             onClickMax={() => updateAPIConfig({...config, history: 24}, false)}
@@ -122,7 +122,7 @@ export function ApiSetting() {
             </div>
         </div>
         <div className='flex mb-4 items-center'>
-            <span className='w-[18%] text-right text-xs text-gray-50 my-1 '>temperature: </span>
+            <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1 '>temperature: </span>
             <div className='ml-4 w-[80%]'>
                 <InputRange value={config.temperature} step={0.1} min={0} max={2}
                             onClickMax={() => updateAPIConfig({...config, temperature: 2.0}, false)}
@@ -138,7 +138,7 @@ export function ApiSetting() {
             </div>
         </div>
         <div className='flex mb-4 items-center'>
-            <span className='w-[18%] text-right text-xs text-gray-50 my-1 '>max_tokens: </span>
+            <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1 '>max_tokens: </span>
             <div className='ml-4 w-[80%]'>
                 <InputRange value={config.max_tokens} min={0} max={32768}
                             onClickMax={() => updateAPIConfig({...config, max_tokens: 32768}, false)}
@@ -154,7 +154,7 @@ export function ApiSetting() {
             </div>
         </div>
         <div className='flex mb-6 items-center'>
-            <span className='w-[18%] text-right text-xs text-gray-50 my-1'>API Key: </span>
+            <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1'>API Key: </span>
             <div className='flex ml-4 w-[80%] items-center'>
                 <div className='w-[50%] flex'>
                     <input
@@ -163,13 +163,13 @@ export function ApiSetting() {
                         onChange={e => {
                             updateAPIConfig({...config, apiKey: e.target.value});
                         }}
-                        className='text-gray-50 appearance-none px-2 py-0.5 bg-[#3b3b3b] text-xs w-[100%] rounded-[5px]'
+                        className='text-gray-600 dark:text-gray-50 appearance-none px-2 py-0.5 dark:bg-[#3b3b3b] text-xs w-[100%] rounded-[5px]'
                         type="text"/>
                 </div>
             </div>
         </div>
         <div className='flex mb-6 items-center'>
-            <span className='w-[18%] text-right text-xs text-gray-50 my-1'>使用代理: </span>
+            <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1'>使用代理: </span>
             <div className='flex ml-4 w-[80%] items-center'>
                 <div className='h-4 flex items-center mr-2'>
                     <input className='accent-[#0080ff]' checked={config.useProxy} onChange={() => {
@@ -180,10 +180,10 @@ export function ApiSetting() {
                     {config.useProxy && <input
                         placeholder='输入反代地址'
                         value={config.proxyAddress}
-                        onChange={e => {
+                        onChange={e  => {
                             updateAPIConfig({...config, proxyAddress: e.target.value});
                         }}
-                        className='text-gray-50 appearance-none px-2 py-0.5 bg-[#3b3b3b] text-xs w-[100%] rounded-[5px]'
+                        className='text-gray-600 dark:text-gray-50 appearance-none px-2 py-0.5 dark:bg-[#3b3b3b] text-xs w-[100%] rounded-[5px]'
                         type="text"/>}
                 </div>
             </div>

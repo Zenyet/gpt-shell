@@ -74,14 +74,14 @@ export function ChatSetting() {
 
     return <>
         <div className='flex mb-4 items-center'>
-            <span className='w-[18%] text-right text-xs text-gray-50 my-1 '>模型: </span>
+            <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1 '>模型: </span>
             <div className='ml-4'>
                 <Select value={config.model} onChange={e => updateChatConfig({...config, model: e.target.value}, false)}
                         options={options}/>
             </div>
         </div>
         <div className='flex mb-6 items-center'>
-            <span className='w-[18%] text-right text-xs text-gray-50 my-1'>Access Token: </span>
+            <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1'>Access Token: </span>
             <div className='flex ml-4 w-[80%] items-center'>
                 <div className='w-[50%] flex'>
                     <input
@@ -90,13 +90,13 @@ export function ChatSetting() {
                         onChange={e => {
                             updateChatConfig({...config, access_token: e.target.value});
                         }}
-                        className='text-gray-50 appearance-none px-2 py-0.5 bg-[#3b3b3b] text-xs w-[100%] rounded-[5px]'
+                        className='text-gray-600 dark:text-gray-50 appearance-none px-2 py-0.5 dark:bg-[#3b3b3b] text-xs w-[100%] rounded-[5px]'
                         type="text"/>
                 </div>
             </div>
         </div>
         <div className='flex mb-6 items-center'>
-            <span className='w-[18%] text-right text-xs text-gray-50 my-1'>使用代理: </span>
+            <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1'>使用代理: </span>
             <div className='flex ml-4 w-[80%] items-center'>
                 <div className='h-4 flex items-center mr-2'>
                     <input className='accent-[#0080ff]' checked={config.useProxy} onChange={() => {
@@ -110,20 +110,20 @@ export function ChatSetting() {
                         onChange={e => {
                             updateChatConfig({...config, proxyAddress: e.target.value});
                         }}
-                        className='text-gray-50 appearance-none px-2 py-0.5 bg-[#3b3b3b] text-xs w-[100%] rounded-[5px]'
+                        className='text-gray-600 dark:text-gray-50 appearance-none px-2 py-0.5 dark:bg-[#3b3b3b] text-xs w-[100%] rounded-[5px]'
                         type="text"/>}
                 </div>
             </div>
         </div>
         <div className='flex mb-6 items-center'>
-            <span className='w-[18%] text-right text-xs text-gray-50 my-1'>保存对话: </span>
+            <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1'>保存对话: </span>
             <div className='flex ml-4 w-[80%] items-center'>
                 <div className='h-4 flex items-center mr-2'>
                     <input className='accent-[#0080ff]' checked={config.keep_session} onChange={() => {
                         updateChatConfig({...config, keep_session: !config.keep_session});
                     }} type="checkbox"/>
                 </div>
-                <span className='text-gray-50 text-xs'>
+                <span className='text-gray-600 dark:text-gray-50 text-xs'>
                     {config.keep_session ? '你的对话将会在官网显示' : '你的对话将会在官网被隐藏'}
                 </span>
             </div>

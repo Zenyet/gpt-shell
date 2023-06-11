@@ -349,5 +349,25 @@ input[type=range]::-webkit-slider-runnable-track {
     color: #d08770
 }
 
+/*dark mode*/
+#menu-active {
+    background-color: #e1e2e0;
+    color: #2f85f1;
+}
+#icon-active, #name-active {
+    fill: #0170f5;
+    color: #0170f5;
+}
+
+@media (prefers-color-scheme: dark) {
+    #menu-active {
+        background-color: #545454 ;
+        color: #00d2ff;
+    }
+    #icon-active, #name-active {
+        fill: #00d2ff;
+        color: #00d2ff;
+    }
+}
 
 

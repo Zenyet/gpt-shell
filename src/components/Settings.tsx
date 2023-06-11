@@ -16,12 +16,12 @@ const Radio = ({value, isChecked, handleClick, children}: {
                 return
             }} checked={isChecked} type='radio' className='absolute cursor-pointer opacity-0 z-0'/>
             <span style={{backgroundColor: isChecked ? '#0077df' : ''}}
-                  className='flex items-center justify-center bg-[#5b5c59] w-3.5 h-3.5 rounded-full'>
+                  className='flex items-center justify-center bg-[#ddd] dark:bg-[#5b5c59] w-3.5 h-3.5 rounded-full'>
                 <span style={{backgroundColor: !isChecked ? 'transparent' : ''}}
                       className='bg-white rounded-full w-1.5 h-1.5 inline-block'></span>
             </span>
         </span>
-        <span className='text-xs text-gray-50'>{children}</span>
+        <span className='text-xs text-gray-600 dark:text-gray-50'>{children}</span>
     </label>
 }
 
@@ -65,7 +65,7 @@ export function Settings({toggleMode}: { toggleMode: (mode: string) => void }) {
     return (
         <div className='w-[90%]'>
             <div className='flex mt-4 mb-2'>
-                <span className='w-[18%] text-right text-xs text-gray-50 my-1'>模式: </span>
+                <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1'>模式: </span>
                 <div className='flex flex-col items-start ml-4'>
                     {options.map((_, idx) => {
                         return <Radio handleClick={handleClick} key={_.value + idx} isChecked={_.value === mode}

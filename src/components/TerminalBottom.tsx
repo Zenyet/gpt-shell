@@ -557,7 +557,8 @@ export function TerminalBottom({mode}: { mode: string }) {
                     </div>
                 </div>
             </div>
-            {isReq && <div className='w-[6px] h-[20px] bg-white animate-breath'></div>}
+            {isReq && <div style={{width: '6px', height: '1rem', backgroundColor: '#fff', marginBottom: '0.5rem'}}
+                           className='animate-breath'></div>}
         </div>
     );
 }
