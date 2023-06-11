@@ -4,7 +4,7 @@ import {InputRange} from "./InputRange.tsx";
 import {useEffect, useRef, useState} from "react";
 import {Select} from "./Select.tsx";
 import {debounce} from "../helpers";
-import {useAtom} from "jotai/index";
+import {useAtom} from "jotai";
 import {configAtom} from "../state";
 
 type APIConfig = {

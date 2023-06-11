@@ -34,16 +34,13 @@ export async function Completions(
     }
     return fetch(apiURL, fetchOptions).then(response => {
         if (!response.ok) {
-            if (response.status === 401) {
-                return response.json().then(errorData => {
-                    throw errorData
-                });
-            } else {
-                throw new Error('Request failed');
-            }
+            return response.json().then(errorData => {
+                const rawErrorMarkdown = '```json\n' + JSON.stringify(errorData, null, 2) + '\n```'
+                throw rawErrorMarkdown
+            });
         }
         return response.body;
-    })
+    }).catch(); // do not handle
 }
 
 export async function Chat(
@@ -94,16 +91,13 @@ export async function Chat(
     }
     return fetch(apiURL, fetchOptions).then(response => {
         if (!response.ok) {
-            if (response.status === 401) {
-                return response.json().then(errorData => {
-                    throw errorData
-                });
-            } else {
-                throw new Error('Request failed');
-            }
+            return response.json().then(errorData => {
+                const rawErrorMarkdown = '```json\n' + JSON.stringify(errorData, null, 2) + '\n```' // pretty print
+                throw rawErrorMarkdown
+            });
         }
         return response.body;
-    })
+    }).catch(); // do not handle
 }
 
 async function removeSession(conversation_id: string, access_token: string) {
