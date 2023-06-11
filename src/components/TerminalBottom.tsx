@@ -23,7 +23,8 @@ interface APIHistory {
     },
     isLast?: boolean,
     d?: string,
-    error?: boolean
+    error?: boolean,
+    mode?: string
 }
 
 interface ChatHistory extends APIHistory {
@@ -249,7 +250,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                                 const contextLen = config?.['api']?.history || 4;
                                 if (histories.length) {
                                     for (let i = histories.length - 1; i >= 0; i--) {
-                                        if (histories[i].error) {
+                                        if (histories[i]?.error || histories[i]?.mode !== 'api') {
                                             continue;
                                         }
                                         if (context.length === contextLen) {
@@ -315,6 +316,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                                                 role: 'assistant',
                                                 replies: fullText
                                             },
+                                            mode,
                                             isLast: false
                                         };
                                         localStorage.setItem('api-store', JSON.stringify([...old_store, new_rc]));
@@ -363,7 +365,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                                 let conversation_id;
                                 if (histories.length) {
                                     for (let i = histories.length - 1; i >= 0; i--) {
-                                        if (histories[i].error) {
+                                        if (histories[i]?.error || histories[i]?.mode !== 'chatgpt-reverse') {
                                             continue
                                         }
                                         if ((histories[i] as ChatHistory).id && (histories[i] as ChatHistory).conversation_id) { // 返回id 和 对话id
@@ -434,6 +436,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                                                 replies: fullText
                                             },
                                             isLast: false,
+                                            mode,
                                             id: message_id,
                                             conversation_id,
                                             parent_message_id
