@@ -10,6 +10,7 @@ import {v4 as uuidv4} from 'uuid';
 import {useAtom} from "jotai";
 import {configAtom} from "../state";
 import {Markdown} from "./Markdown.tsx";
+import {useIntersectionObserver} from "../hooks/useIntersectionObserver.ts";
 
 interface APIHistory {
     ts: number
@@ -75,6 +76,7 @@ export function TerminalBottom({mode}: { mode: string }) {
     const [isReq, setReq] = useState<boolean>(false);
     const t_a_ref = useRef<HTMLTextAreaElement>(null);
     const con_ref = useRef<HTMLDivElement>(null);
+    const visible = useIntersectionObserver(t_a_ref, '0px', 0, con_ref);
     const cmdMapsRef = useRef<{
         maps: string[],
         idx: number
@@ -88,6 +90,20 @@ export function TerminalBottom({mode}: { mode: string }) {
     }
 
     const [config] = useAtom(configAtom);
+
+    useEffect(() => {
+        function listener(e: globalThis.KeyboardEvent) {
+            if (!isReq && !processing && e.code !== 'Enter') {
+                t_a_ref.current.focus();
+            }
+        }
+
+        if (!visible) {
+            document.body.addEventListener('keypress', listener);
+        }
+
+        return () => document.body.removeEventListener('keypress', listener);
+    }, [visible]);
 
     useEffect(() => {
         setL_L(localStorage.getItem('l_l') || 'Last login: Sun May 7 23:19:46 on Chrome');
