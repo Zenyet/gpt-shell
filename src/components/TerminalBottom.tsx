@@ -159,7 +159,7 @@ export function TerminalBottom({mode}: { mode: string }) {
         const {isComposing} = e.nativeEvent;
         if (!isReq && !processing && !e.shiftKey && !isComposing && e.key === 'Enter') {
             e.preventDefault();
-            cmdMapsRef.current.maps.push(prompt);
+            prompt && cmdMapsRef.current.maps.push(prompt);
             if (prompt.startsWith('history')) {
                 setSug('');
                 const splits = prompt.split('|');
