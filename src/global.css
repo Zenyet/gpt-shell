@@ -86,8 +86,9 @@ input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none; /*清除默认样式*/
     height: 1.25rem; /*设置滑块高度*/
     width: 0.625rem; /*设置滑块宽度*/
-    background: #939492; /*设置背景色*/
+    background: #fff; /*设置背景色*/
     border-radius: 1rem; /*加个圆角边*/
+    border: gainsboro 1px solid;
     transform: translateX(-3px);
     position: relative;
     z-index: 99;
@@ -360,6 +361,16 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 @media (prefers-color-scheme: dark) {
+    input[type=range]::-webkit-slider-thumb {
+        background-color: #939492;
+        border: 1px solid #a1a2a3;
+    }
+
+    input[type=range]::-moz-range-thumb {
+        background-color: #939492;
+        border: 1px solid #737472;
+    }
+
     #menu-active {
         background-color: #545454 ;
         color: #00d2ff;
