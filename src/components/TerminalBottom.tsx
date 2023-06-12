@@ -346,7 +346,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                                             role: 'user'
                                         },
                                         assistant: {
-                                            replies: err,
+                                            replies: err?.message || err,
                                             role: 'assistant'
                                         },
                                         ts: +new Date(),
@@ -449,7 +449,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                                             role: 'user'
                                         },
                                         assistant: {
-                                            replies: err_,
+                                            replies: err_?.message || err_,
                                             role: 'assistant'
                                         },
                                         ts: +new Date(),
