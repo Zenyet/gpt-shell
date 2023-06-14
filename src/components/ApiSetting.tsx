@@ -32,6 +32,15 @@ export function ApiSetting() {
             label: 'gpt-3.5-turbo-0301'
         },
         {
+            value: 'gpt-3.5-turbo-0613',
+            label: 'gpt-3.5-turbo-0613'
+
+        },
+        {
+            value: 'gpt-3.5-turbo-16k',
+            label: 'gpt-3.5-turbo-16k'
+        },
+        {
             value: 'gpt-4',
             label: 'gpt-4'
         },
@@ -40,12 +49,20 @@ export function ApiSetting() {
             label: 'gpt4-0314'
         },
         {
+            value: 'gpt-4-0613',
+            label: 'gpt-4-0613'
+        },
+        {
             value: 'gpt4-32k',
             label: 'gpt4-32k'
         },
         {
             value: 'gpt4-32k-0314',
             label: 'gpt4-32k-0314'
+        },
+        {
+            value: 'gpt-4-32k-0613',
+            label: 'gpt-4-32k-0613'
         }
     ];
 
