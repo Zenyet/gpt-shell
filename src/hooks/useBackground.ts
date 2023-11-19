@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 export function useBackground(): string {
     const [bingURL, setURL] = useState<string>('');
     useEffect(() => {
-        fetch('https://thoughtflow.org/bing-wallpaper', {
+        fetch('https://proxy.thoughtflow.org/proxy/www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US', {
             method: 'GET',
             headers: {
                 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
