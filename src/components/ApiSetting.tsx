@@ -41,6 +41,10 @@ export function ApiSetting() {
             label: 'gpt-3.5-turbo-16k'
         },
         {
+            value: 'gpt-3.5-turbo-16k-0613',
+            label: 'gpt-3.5-turbo-16k-0613'
+        },
+        {
             value: 'gpt-4',
             label: 'gpt-4'
         },
@@ -63,7 +67,11 @@ export function ApiSetting() {
         {
             value: 'gpt-4-32k-0613',
             label: 'gpt-4-32k-0613'
-        }
+        },
+        {
+            value: 'gpt-4-1106-preview',
+            label: 'gpt-4-1106-preview',
+        },
     ];
 
     useEffect(() => {
@@ -197,7 +205,7 @@ export function ApiSetting() {
                     {config.useProxy && <input
                         placeholder='输入反代地址'
                         value={config.proxyAddress}
-                        onChange={e  => {
+                        onChange={e => {
                             updateAPIConfig({...config, proxyAddress: e.target.value});
                         }}
                         className='text-gray-600 dark:text-gray-50 appearance-none px-2 py-0.5 dark:bg-[#3b3b3b] text-xs w-[100%] rounded-[5px]'
