@@ -544,7 +544,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                             </div>
                             <div>
                                 {_?.d && <span className='mr-2 text-green-700 font-mono text-sm'>{_?.d}</span>}
-                                <span className='text-gray-300'>{_?.user.command}</span>
+                                <pre className='text-gray-300'>{_?.user.command}</pre>
                             </div>
                         </div>
                         {!_?.isLast && <Markdown tokens={_?.assistant?.replies}/>}
