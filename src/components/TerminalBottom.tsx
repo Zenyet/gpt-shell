@@ -169,6 +169,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                 } else if (mode === 'chatgpt-reverse') {
                     his = JSON.parse(localStorage.getItem('chat-store')) || [];
                 }
+                if (his.length >= 50) his = his.splice(50);
                 if (splits[1]) {
                     const filter_date = splits[1].split('grep')[1]?.trim();
                     const copy = his.filter(_ => _.d.split(' ')[0] === filter_date);
@@ -200,7 +201,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                 }
             } else {
                 switch (prompt) {
-                    case "help": {
+                    case 'help': {
                         setSug('');
                         setHistories([...histories, {
                             user: {
@@ -215,7 +216,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                         }])
                         break;
                     }
-                    case "exit": {
+                    case 'exit': {
                         setSug('');
                         // window.open('', '_self', '');
                         setHistories([...histories, {
@@ -263,7 +264,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                             }]);
                             const context = [];
                             if (mode === 'api') {
-                                const contextLen = config?.['api']?.history || 4;
+                                const contextLen = config?.['api']?.history*2 || 4;
                                 if (histories.length) {
                                     for (let i = histories.length - 1; i >= 0; i--) {
                                         if (histories[i]?.error || histories[i]?.mode !== 'api') {
@@ -282,9 +283,9 @@ export function TerminalBottom({mode}: { mode: string }) {
                                             })
                                         }
                                     }
-                                    if (context.length < 1) {
+                                    if (context.length < contextLen) {
                                         const r_c = JSON.parse(localStorage.getItem('api-store')) || [];
-                                        r_c.slice(-contextLen).forEach(_ => {
+                                        r_c.slice(-(contextLen - context.length)/2).forEach(_ => {
                                             context.push({
                                                 "role": _.user.role,
                                                 "content": _.user.command
@@ -296,7 +297,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                                     }
                                 } else if (localStorage.getItem('api-store')) {
                                     const r_c = JSON.parse(localStorage.getItem('api-store')) || [];
-                                    r_c.slice(-contextLen).forEach(_ => {
+                                    r_c.slice(-(contextLen/2)).forEach(_ => {
                                         context.push({
                                             "role": _.user.role,
                                             "content": _.user.command
@@ -544,7 +545,7 @@ export function TerminalBottom({mode}: { mode: string }) {
                             </div>
                             <div>
                                 {_?.d && <span className='mr-2 text-green-700 font-mono text-sm'>{_?.d}</span>}
-                                <pre className='text-gray-300'>{_?.user.command}</pre>
+                                <span className='text-gray-300 whitespace-break-spaces'>{_?.user.command}</span>
                             </div>
                         </div>
                         {!_?.isLast && <Markdown tokens={_?.assistant?.replies}/>}
