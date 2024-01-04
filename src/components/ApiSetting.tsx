@@ -15,6 +15,7 @@ type APIConfig = {
     useProxy?: boolean
     proxyAddress?: string
     apiKey?: string
+    max_history?: number
 }
 
 export function ApiSetting() {
@@ -98,7 +99,8 @@ export function ApiSetting() {
                     history: 4,
                     useProxy: true,
                     proxyAddress: 'https://thoughtflow.org/reverse/api-reverse',
-                    apiKey: ''
+                    apiKey: '',
+                    max_history: 25
                 };
                 localStorage.setItem('config', JSON.stringify({...config, 'api': configRef.current}));
             }
@@ -174,6 +176,22 @@ export function ApiSetting() {
                                 (+e.target.value < 32768) && updateAPIConfig({
                                     ...config,
                                     max_tokens: +e.target.value || 0
+                                });
+                            }}/>
+            </div>
+        </div>
+        <div className='flex mb-4 items-center'>
+            <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1 '>历史记录条数: </span>
+            <div className='ml-4 w-[80%]'>
+                <InputRange value={config.max_history} min={1} max={999}
+                            onClickMax={() => updateAPIConfig({...config, max_history: 999}, false)}
+                            onClickMin={() => updateAPIConfig({...config, max_history: 0}, false)}
+                            onClickMiddle={() => updateAPIConfig({...config, max_history: 498}, false)}
+                            onChange={(e) => {
+                                (+e.target.value > 999) && updateAPIConfig({...config, max_history: 999});
+                                (+e.target.value < 999) && updateAPIConfig({
+                                    ...config,
+                                    max_history: +e.target.value || 0
                                 });
                             }}/>
             </div>

@@ -169,10 +169,15 @@ export function TerminalBottom({mode}: { mode: string }) {
                 } else if (mode === 'chatgpt-reverse') {
                     his = JSON.parse(localStorage.getItem('chat-store')) || [];
                 }
-                if (his.length >= 50) his = his.splice(50);
+                const {max_history} = config[mode];
                 if (splits[1]) {
                     const filter_date = splits[1].split('grep')[1]?.trim();
-                    const copy = his.filter(_ => _.d.split(' ')[0] === filter_date);
+                    const filter = [];
+                    his.find((_ => {
+                        if(filter.length === max_history) return true;
+                        _.d.split(' ')[0] === filter_date && filter.push(_);
+                        return false;
+                    }))
                     setHistories([{
                         user: {
                             role: 'user',
@@ -184,8 +189,9 @@ export function TerminalBottom({mode}: { mode: string }) {
                         },
                         isLast: false,
                         ts: +new Date()
-                    }, ...copy]);
+                    }, ...filter]);
                 } else if (prompt === 'history') {
+                    if (his.length >= max_history) his = his.slice(his.length - max_history < 0 ? 0 : his.length - max_history);
                     setHistories([{
                         user: {
                             role: 'user',

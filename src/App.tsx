@@ -24,14 +24,16 @@ function App() {
                 history: 4,
                 useProxy: true,
                 proxyAddress: 'https://thoughtflow.org/reverse/api-reverse',
-                apiKey: ''
+                apiKey: '',
+                max_history: 25
             },
             'chatgpt-reverse': {
                 model: 'text-davinci-002-render-sha',
                 useProxy: true,
                 proxyAddress: 'https://ai.fakeopen.com/api/conversation',
                 access_token: '',
-                keep_session: true
+                keep_session: true,
+                max_history: 25
             }
         };
         curModeRef.current = cf?.mode || 'api';

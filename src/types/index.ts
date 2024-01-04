@@ -4,6 +4,7 @@ export type ChatConfig = {
     useProxy: boolean,
     access_token?: string
     keep_session?: boolean
+    max_history?: number
 }
 
 export type APIConfig = {

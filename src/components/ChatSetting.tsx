@@ -6,6 +6,7 @@ import {Select} from "./Select.tsx";
 import {useAtom} from "jotai";
 import {configAtom} from "../state";
 import {ChatConfig} from "../types";
+import {InputRange} from "./InputRange.tsx";
 
 export function ChatSetting() {
     const configRef = useRef(null);
@@ -45,7 +46,8 @@ export function ChatSetting() {
                     useProxy: true,
                     proxyAddress: 'https://ai.fakeopen.com/api/conversation',
                     access_token: '',
-                    keep_session: true
+                    keep_session: true,
+                    max_history: 25
                 };
                 setCF({...config, 'chatgpt-reverse': configRef.current});
                 localStorage.setItem('config', JSON.stringify({...config, 'chatgpt-reverse': configRef.current}))
@@ -80,7 +82,7 @@ export function ChatSetting() {
                         options={options}/>
             </div>
         </div>
-        <div className='flex mb-6 items-center'>
+        <div className='flex mb-4 items-center'>
             <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1'>Access Token: </span>
             <div className='flex ml-4 w-[80%] items-center'>
                 <div className='w-[50%] flex'>
@@ -93,6 +95,22 @@ export function ChatSetting() {
                         className='text-gray-600 dark:text-gray-50 appearance-none px-2 py-0.5 dark:bg-[#3b3b3b] text-xs w-[100%] rounded-[5px]'
                         type="text"/>
                 </div>
+            </div>
+        </div>
+        <div className='flex mb-4 items-center'>
+            <span className='w-[18%] text-right text-xs text-gray-600 dark:text-gray-50 my-1 '>历史记录条数: </span>
+            <div className='ml-4 w-[80%]'>
+                <InputRange value={config.max_history} min={1} max={999}
+                            onClickMax={() => updateChatConfig({...config, max_history: 999}, false)}
+                            onClickMin={() => updateChatConfig({...config, max_history: 0}, false)}
+                            onClickMiddle={() => updateChatConfig({...config, max_history: 498}, false)}
+                            onChange={(e) => {
+                                (+e.target.value > 999) && updateChatConfig({...config, max_history: 999});
+                                (+e.target.value < 999) && updateChatConfig({
+                                    ...config,
+                                    max_history: +e.target.value || 0
+                                });
+                            }}/>
             </div>
         </div>
         <div className='flex mb-6 items-center'>
