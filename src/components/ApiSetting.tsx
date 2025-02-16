@@ -25,6 +25,10 @@ export function ApiSetting() {
 
     const options = [
         {
+            value: 'ep-20250216222510-kf96g',
+            label: 'deepseek-r1'
+        },
+        {
             value: 'gpt-3.5-turbo',
             label: 'gpt-3.5-turbo'
         },
